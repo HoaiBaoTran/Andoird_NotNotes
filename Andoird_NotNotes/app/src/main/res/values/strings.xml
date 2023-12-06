@@ -7,4 +7,7 @@
     <string name="remember_me">Lưu đăng nhập</string>
     <string name="sign_up">Đăng ký</string>
     <string name="forget_password">Quên mật khẩu?</string>
+    <string name="name">Họ và tên</string>
+    <string name="confirm_password">Nhập lại mật khẩu</string>
+    <string name="login">Đăng nhập</string>
 </resources>
