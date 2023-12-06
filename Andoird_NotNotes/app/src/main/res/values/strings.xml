@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">NotNotes</string>
+    <string name="enter_email">Nhập email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="email">Email</string>
+    <string name="enter_password">Nhập mật khẩu</string>
+    <string name="remember_me">Lưu đăng nhập</string>
+    <string name="sign_up">Đăng ký</string>
+    <string name="forget_password">Quên mật khẩu?</string>
 </resources>
