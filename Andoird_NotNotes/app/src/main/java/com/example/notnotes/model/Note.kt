@@ -1,4 +1,4 @@
-package com.example.notnotes
+package com.example.notnotes.model
 
 data class Note constructor(
     var name: String) {
