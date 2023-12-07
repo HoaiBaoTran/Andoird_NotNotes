@@ -3,10 +3,10 @@ package com.example.notnotes.model
 data class User(var name: String) {
     var id: Int = -1;
     var email: String = ""
-    var phoneNumber: String = ""
-    var address: String = ""
-    var job: String = ""
-    var homepage: String = ""
+    var phoneNumber: String? = null
+    var address: String? = null
+    var job: String? = null
+    var homepage: String? = null
 
     constructor(id: Int, name: String, email: String, phoneNumber: String,
                 address: String, job: String, homepage: String) : this(name)
