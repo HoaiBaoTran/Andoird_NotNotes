@@ -67,4 +67,5 @@
     <string name="profile">Trang cá nhân</string>
     <string name="settings">Cài đặt</string>
     <string name="logout">Đăng xuất</string>
+    <string name="back">Quay lại</string>
 </resources>
