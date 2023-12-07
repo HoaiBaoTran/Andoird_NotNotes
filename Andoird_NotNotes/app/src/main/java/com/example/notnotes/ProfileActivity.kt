@@ -1,5 +1,6 @@
 package com.example.notnotes
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,16 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
+
+        binding.imageButton.setOnClickListener {
+            openEditProfileActivity()
+        }
+    }
+
+    private fun openEditProfileActivity () {
+        val editProfileIntent = Intent(this, EditProfileActivity::class.java)
+        startActivity(editProfileIntent)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
