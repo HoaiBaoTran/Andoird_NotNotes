@@ -6,7 +6,7 @@ CREATE TABLE `users`
 (
     id INT(11) NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL,
-    email VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL,
+    email VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL UNIQUE,
     `password` VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL,
     phonenumber VARCHAR(40) COLLATE utf8_unicode_ci,
     address VARCHAR(40) COLLATE utf8_unicode_ci,

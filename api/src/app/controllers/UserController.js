@@ -50,6 +50,32 @@ class UserController {
           });
     }
 
+    getUserByEmail (req, res, next) {
+        db.connect(function (err) {
+            if (err) throw err;
+            const sql = 'SELECT * FROM users WHERE email = ?'
+            const {email} = req.body
+            db.query(sql, email, function (err, result, fields) {
+                if (err) {
+                    throw(err)
+                }
+                else if (result.length === 0) {
+                    res.json({
+                        code: 404,
+                        message: 'User not found'
+                    })
+                }
+                else {
+                    res.json({
+                            code: 200,
+                            message: 'Get user success',
+                            data: result
+                    });
+                }
+            })
+        })
+    }
+
     addUser (req, res, next) {
         db.connect (function (err) {
             if (err) {

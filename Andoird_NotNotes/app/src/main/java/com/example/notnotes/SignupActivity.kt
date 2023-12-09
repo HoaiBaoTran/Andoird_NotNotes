@@ -14,6 +14,7 @@ import okhttp3.Callback
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
@@ -24,6 +25,9 @@ import java.util.regex.Pattern
 class SignupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignupBinding
+
+    private val SUCCESS_CODE = 200
+    private val NOT_FOUND_CODE = 404
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +63,7 @@ class SignupActivity : AppCompatActivity() {
                 }
                 else {
                     val user = User(name, email, password)
-                    addUser(user)
+                    isMailExist(user)
                 }
 
 
@@ -100,6 +104,44 @@ class SignupActivity : AppCompatActivity() {
 
         val dialog: AlertDialog = builder.create()
         dialog.show()
+    }
+
+    private fun isMailExist(user: User) {
+        val url = "http://10.0.2.2:8081/api/users/email"
+        val body = FormBody.Builder()
+            .add("email", user.email)
+            .build()
+
+        val client = OkHttpClient()
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build();
+
+        client.newCall(request).enqueue(object: Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                Log.d("MAIN_ACTIVITY_FAIL", e.message.toString());
+            }
+
+            override fun onResponse(call: okhttp3.Call, response: Response) {
+                try {
+                    val responseData = response.body?.string();
+                    val json  = JSONObject(responseData!!)
+                    val jsonCode = json.getInt("code")
+                    runOnUiThread {
+                        if (jsonCode == SUCCESS_CODE) {
+                            showDialog("Lỗi", "Email đã được sử dụng")
+                        }
+                        else if (jsonCode == NOT_FOUND_CODE){
+                            addUser(user)
+                        }
+                    }
+
+                } catch (e: Exception) {
+                    Log.d("MAIN_ACTIVITY_EXCEPTION", e.message.toString())
+                }
+            }
+        })
     }
 
     private fun addUser(user: User) {
