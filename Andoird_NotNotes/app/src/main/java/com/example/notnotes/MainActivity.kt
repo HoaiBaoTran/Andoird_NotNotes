@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         callApi()
     }
 
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: okhttp3.Call, response: Response) {
                 try {
                     val responseData = response.body?.string();
-                    val json: JSONObject = JSONObject(responseData!!)
+                    val json  = JSONObject(responseData!!)
                     val jsonArray = json.getJSONArray("data")
                     runOnUiThread {
                         for (index in 0 until jsonArray.length()) {
