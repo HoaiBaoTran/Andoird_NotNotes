@@ -37,17 +37,17 @@ class SignupActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
         binding.btnSignup.setOnClickListener {
-            if (!validField(binding.etNameSignup)
-                || !validField(binding.etEmailSingup)
-                || !validField(binding.etPasswordSignup)
-                || !validField(binding.etConfirmPasswordSignup))
+            if (!isValidField(binding.etNameSignup)
+                || !isValidField(binding.etEmailSignup)
+                || !isValidField(binding.etPasswordSignup)
+                || !isValidField(binding.etConfirmPasswordSignup))
             {
                 val title = "Lỗi thông tin trống"
                 val message = "Xin vui lòng điền hết thông tin"
                 showDialog(title, message)
             } else {
                 val name = binding.etNameSignup.text.toString()
-                val email = binding.etEmailSingup.text.toString()
+                val email = binding.etEmailSignup.text.toString()
                 val password = binding.etPasswordSignup.text.toString()
                 val confirmPassword = binding.etConfirmPasswordSignup.text.toString()
 
@@ -85,7 +85,7 @@ class SignupActivity : AppCompatActivity() {
         return matcher.find()
     }
 
-    private fun validField(editText: EditText) : Boolean {
+    private fun isValidField(editText: EditText) : Boolean {
         if (editText.text.isEmpty()) {
             editText.requestFocus()
             return false
@@ -171,7 +171,7 @@ class SignupActivity : AppCompatActivity() {
                     runOnUiThread {
                         showDialog("Thông báo", jsonMessage + ". Sau 5s tự động chuyển sang màn hình đăng nhập")
                         Handler().postDelayed({
-                            openLoginActivity()
+                            finish()
                         }, 5000)
                     }
                 } catch (e: Exception) {
@@ -179,12 +179,6 @@ class SignupActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    private fun openLoginActivity () {
-        val loginActivity = Intent(this, LoginActivity::class.java)
-        startActivity(loginActivity)
-        finish()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

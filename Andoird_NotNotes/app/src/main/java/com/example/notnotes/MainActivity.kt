@@ -38,9 +38,22 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_profile -> openProfileActivity()
+            R.id.menu_item_logout -> openLoginActivity()
+            R.id.menu_item_change_password -> openChangePasswordActivity()
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun openChangePasswordActivity() {
+        val changePasswordIntent = Intent(this, ChangePasswordActivity::class.java)
+        startActivity(changePasswordIntent)
+    }
+
+    private fun openLoginActivity() {
+        val loginIntent = Intent(this, LoginActivity::class.java)
+        startActivity(loginIntent)
+        finish()
     }
 
     private fun openProfileActivity() {
@@ -73,4 +86,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+
 }

@@ -34,8 +34,8 @@
         android:hint="@string/enter_name"
         android:inputType="textEmailAddress"
         android:padding="8dp"
-        app:layout_constraintStart_toStartOf="@id/etEmailSingup"
-        app:layout_constraintBottom_toTopOf="@id/etEmailSingup"/>
+        app:layout_constraintStart_toStartOf="@id/etEmailSignup"
+        app:layout_constraintBottom_toTopOf="@id/etEmailSignup"/>
 
     <TextView
         android:id="@+id/textView5"
@@ -51,7 +51,7 @@
 
 
     <EditText
-        android:id="@+id/etEmailSingup"
+        android:id="@+id/etEmailSignup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -78,8 +78,8 @@
         android:textColor="@color/redtext"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/etEmailSingup"
-        app:layout_constraintStart_toStartOf="@+id/etEmailSingup" />
+        app:layout_constraintBottom_toTopOf="@+id/etEmailSignup"
+        app:layout_constraintStart_toStartOf="@+id/etEmailSignup" />
 
     <EditText
         android:id="@+id/etPasswordSignup"
@@ -96,7 +96,7 @@
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etEmailSingup" />
+        app:layout_constraintTop_toBottomOf="@+id/etEmailSignup" />
 
     <TextView
         android:id="@+id/textView3"

@@ -1,8 +1,8 @@
 package com.example.notnotes.model
 
-data class User(var name: String) {
+data class User(var email: String) {
     var id: Int = -1;
-    var email: String = ""
+    var name: String = ""
     var password: String = ""
     var phoneNumber: String? = null
     var address: String? = null
@@ -10,10 +10,10 @@ data class User(var name: String) {
     var homepage: String? = null
 
     constructor(id: Int, name: String, email: String, phoneNumber: String,
-                address: String, password: String, job: String, homepage: String) : this(name)
+                address: String, password: String, job: String, homepage: String) : this(email)
     {
         this.id = id
-        this.email = email
+        this.name = name
         this.password = password
         this.phoneNumber = phoneNumber
         this.address = address
@@ -21,8 +21,11 @@ data class User(var name: String) {
         this.homepage = homepage
     }
 
-    constructor (name: String, email: String, password: String) : this(name) {
-        this.email = email
+    constructor (name: String, email: String, password: String) : this(email) {
+        this.name = name
+        this.password = password
+    }
+    constructor(email: String, password: String) : this(email) {
         this.password = password
     }
 }
