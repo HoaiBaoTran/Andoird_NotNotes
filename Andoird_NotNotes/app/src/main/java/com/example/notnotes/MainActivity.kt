@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.example.notnotes.databinding.ActivityMainBinding
+import com.example.notnotes.model.User
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -19,14 +20,31 @@ import java.lang.Exception
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        user = getUserSession()
+
+        binding.tvHello.text = "Hello $user"
 
         callApi()
+    }
+
+    private fun getUserSession(): User {
+        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
+        val id = sharedPreferences.getInt("id", -1)
+        val name = sharedPreferences.getString("name", "")
+        val email = sharedPreferences.getString("email", "")
+        val password  = sharedPreferences.getString("password", "")
+        val phoneNumber = sharedPreferences.getString("phoneNumber", null)
+        val address = sharedPreferences.getString("address", null)
+        val job  = sharedPreferences.getString("job", null)
+        val homepage = sharedPreferences.getString("homepage", null)
+        return User(id, name!!, email!!, password!!, phoneNumber, address, job, homepage)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

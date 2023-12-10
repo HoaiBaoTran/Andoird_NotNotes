@@ -9,8 +9,8 @@ data class User(var email: String) {
     var job: String? = null
     var homepage: String? = null
 
-    constructor(id: Int, name: String, email: String, phoneNumber: String,
-                address: String, password: String, job: String, homepage: String) : this(email)
+    constructor(id: Int, name: String, email: String, password: String,
+                phoneNumber: String?, address: String?, job: String?, homepage: String?) : this(email)
     {
         this.id = id
         this.name = name

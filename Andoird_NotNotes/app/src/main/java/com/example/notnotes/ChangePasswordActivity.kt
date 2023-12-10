@@ -3,7 +3,11 @@ package com.example.notnotes
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.databinding.ActivityChangePasswordBinding
+import com.example.notnotes.model.User
+import java.util.regex.Pattern
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -16,6 +20,70 @@ class ChangePasswordActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
+        binding.btnChangePassword.setOnClickListener {
+            if (!isValidField(binding.etOldPassword)
+                || !isValidField(binding.etNewPassword)
+                || !isValidField(binding.etConfirmNewPassword))
+            {
+                val title = "Lỗi thông tin trống"
+                val message = "Xin vui lòng điền hết thông tin"
+                showDialog(title, message)
+            }
+            else {
+                val password = binding.etNewPassword.text.toString()
+                val confirmPassword = binding.etConfirmNewPassword.text.toString()
+                if (!validPassword(password)) {
+                    val title = "Lỗi mật khẩu"
+                    val message = "Mật khẩu ít nhất 8 ký tự và gồm 1 ký tự in hoa và 1 chữ số"
+                    showDialog(title, message)
+                }
+                else if (!comparePassword(password, confirmPassword)) {
+                    val title = "Lỗi mật khẩu"
+                    val message = "Mật khẩu không khớp"
+                    showDialog(title, message)
+                }
+                else {
+                    // CODE CHANGEPASSWORD HERE
+                }
+
+            }
+        }
+
+    }
+
+    private fun comparePassword(
+        password: String,
+        confirmPassword: String) : Boolean {
+        return password == confirmPassword
+    }
+
+    private fun validPassword (password: String) : Boolean {
+        val regexPattern =
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}"
+        val pattern = Pattern.compile(regexPattern)
+        val matcher = pattern.matcher(password)
+        return matcher.find()
+    }
+
+    private fun isValidField(editText: EditText) : Boolean {
+        if (editText.text.isEmpty()) {
+            editText.requestFocus()
+            return false
+        }
+        return true
+    }
+
+    private fun showDialog(title: String, message: String) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Ok") { dialog, which ->
+                dialog.dismiss()
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

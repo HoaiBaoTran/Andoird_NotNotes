@@ -86,16 +86,20 @@ class LoginActivity : AppCompatActivity() {
                     runOnUiThread {
                         if (jsonCode == NOT_FOUND_CODE) {
                             showDialog("Lỗi", "Email hoặc mật khẩu sai!!!")
+                            Log.d("MAIN_ACTIVITY_FAIL", "NOT_FOUND_CODE");
+
                         }
                         else if (jsonCode == SUCCESS_CODE){
                             val userRes = json.getJSONArray("data").getJSONObject(0)
-                            val password = userRes.getString("password")
-                            if (user.password != password) {
+                            val userResObj = convertUserJsonToObject(userRes)
+                            if (user.password != userResObj.password) {
                                 showDialog("Lỗi", "Email hoặc mật khẩu sai!!!")
                             }
                             else {
                                 showDialog("Thông báo", "Đăng nhập thành công. Sau 5s tự động chuyển sang màn hình đăng nhập")
                                 Handler().postDelayed({
+                                    Log.d("MAIN_ACTIVITY", user.toString())
+                                    saveUserSession(userResObj)
                                     openMainActivity()
                                 }, 5000)
                             }
@@ -109,10 +113,38 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    private fun saveUserSession(user: User) {
+        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.apply {
+            putInt("id", user.id)
+            putString("name", user.name)
+            putString("email", user.email)
+            putString("password", user.password)
+            putString("phoneNumber", user.phoneNumber)
+            putString("address", user.address)
+            putString("job", user.job)
+            putString("homepage", user.homepage)
+            apply()
+        }
+    }
+
     private fun openMainActivity () {
         val mainIntent = Intent(this, MainActivity::class.java)
         startActivity(mainIntent)
         finish()
+    }
+
+    private fun convertUserJsonToObject(userRes: JSONObject): User {
+        val id = userRes.getInt("id")
+        val name = userRes.getString("name")
+        val email = userRes.getString("email")
+        val password = userRes.getString("password")
+        val phoneNumber = userRes.getString("phonenumber")
+        val address = userRes.getString("address")
+        val job = userRes.getString("job")
+        val homepage = userRes.getString("homepage")
+        return User(id, name, email, password, phoneNumber, address, job, homepage)
     }
 
     private fun openSignupActivity() {
