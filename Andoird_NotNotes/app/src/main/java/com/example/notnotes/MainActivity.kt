@@ -1,6 +1,7 @@
 package com.example.notnotes
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.telecom.Call
@@ -56,11 +57,27 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_profile -> openProfileActivity()
-            R.id.menu_item_logout -> openLoginActivity()
+            R.id.menu_item_logout -> logoutAccount()
             R.id.menu_item_change_password -> openChangePasswordActivity()
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun logoutAccount() {
+        deleteSharedPreferences("MyPreferences")
+        openLoginActivity()
+    }
+
+    override fun deleteSharedPreferences(prefName: String): Boolean {
+        val sharedPreferences: SharedPreferences = getSharedPreferences(prefName, MODE_PRIVATE)
+
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+
+        return true
+
     }
 
     private fun openChangePasswordActivity() {
