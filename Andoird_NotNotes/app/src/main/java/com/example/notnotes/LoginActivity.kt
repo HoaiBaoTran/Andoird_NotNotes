@@ -98,7 +98,6 @@ class LoginActivity : AppCompatActivity() {
                             else {
                                 showDialog("Thông báo", "Đăng nhập thành công. Sau 5s tự động chuyển sang màn hình đăng nhập")
                                 Handler().postDelayed({
-                                    Log.d("MAIN_ACTIVITY", user.toString())
                                     saveUserSession(userResObj)
                                     openMainActivity()
                                 }, 5000)

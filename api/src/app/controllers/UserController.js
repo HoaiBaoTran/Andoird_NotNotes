@@ -101,9 +101,26 @@ class UserController {
         db.connect (function (err) {
             if (err)
                 throw err;
-            const {email, name, } = req.body
-            const sql = 'SELECT * FROM user WHERE email = ?'
-            const params = [email]
+            const {email, name, phoneNumber, address, job, homepage} = req.body
+            const sql = `UPDATE users SET name = ?, email = ?, phoneNumber = ?, address = ?, job = ?, homepage = ? WHERE id = ?`
+            const id = req.params.id
+            const params = [name, email, phoneNumber, address, job, homepage, id]
+            db.query(sql, params, function (err, result, fields) {
+                if (err) {
+                    res.json({
+                        code: 404,
+                        message: 'Update user failed',
+                        err
+                    })
+                }
+                else {
+                    res.json({
+                        code: 200,
+                        message: 'Update user success',
+                        data: result
+                    });
+                }
+            })
         })
     
     }

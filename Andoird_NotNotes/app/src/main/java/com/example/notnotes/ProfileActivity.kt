@@ -23,7 +23,7 @@ class ProfileActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
         user = getUserSession()
-        updateUserInfo()
+        loadUserInfo()
 
         binding.btnImage.setOnClickListener {
             openEditProfileActivity()
@@ -42,15 +42,24 @@ class ProfileActivity : AppCompatActivity() {
         return User(id, name!!, email!!, password!!, phoneNumber, address, job, homepage)
     }
 
-    private fun updateUserInfo() {
-        binding.tvNameInfo.text = user.name
-        binding.tvName.text = user.name
-        binding.tvEmailInfo.text = user.email
+    override fun onResume() {
+        super.onResume()
+        user = getUserSession()
+        loadUserInfo()
+    }
+
+    private fun loadUserInfo() {
+        binding.apply {
+            tvNameInfo.text = user.name
+            tvName.text = user.name
+            tvEmailInfo.text = user.email
+        }
+
 
         binding.tvPhoneNumberInfo.text = if (user.phoneNumber == "null") {
             NO_INFORMATION
         } else {
-            user.address
+            user.phoneNumber
         }
 
         binding.tvAddressInfo.text = if(user.address == "null") {

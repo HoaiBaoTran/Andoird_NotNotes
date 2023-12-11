@@ -6,5 +6,6 @@ router.post('/', userController.addUser)
 router.get('/', userController.getAllUsers)
 router.get('/:id', userController.getUserById)
 router.post('/email', userController.getUserByEmail)
+router.put('/:id', userController.updateUserById)
 
 module.exports = router

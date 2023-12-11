@@ -72,7 +72,7 @@
         app:layout_constraintStart_toStartOf="@+id/etEmailLogin" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvNameEditProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
