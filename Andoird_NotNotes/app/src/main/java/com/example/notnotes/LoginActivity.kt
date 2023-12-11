@@ -119,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
             putInt("id", user.id)
             putString("name", user.name)
             putString("email", user.email)
-            putString("password", user.password)
+            putString("password", "")
             putString("phoneNumber", user.phoneNumber)
             putString("address", user.address)
             putString("job", user.job)

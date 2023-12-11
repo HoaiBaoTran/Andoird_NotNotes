@@ -38,13 +38,13 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val id = sharedPreferences.getInt("id", -1)
         val name = sharedPreferences.getString("name", "")
+        val password = ""
         val email = sharedPreferences.getString("email", "")
-        val password  = sharedPreferences.getString("password", "")
         val phoneNumber = sharedPreferences.getString("phoneNumber", null)
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return User(id, name!!, email!!, password!!, phoneNumber, address, job, homepage)
+        return User(id, name!!, email!!, password, phoneNumber, address, job, homepage)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

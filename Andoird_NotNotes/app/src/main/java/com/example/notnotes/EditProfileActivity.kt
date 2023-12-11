@@ -121,7 +121,7 @@ class EditProfileActivity : AppCompatActivity() {
         val id = sharedPreferences.getInt("id", -1)
         val name = sharedPreferences.getString("name", "")
         val email = sharedPreferences.getString("email", "")
-        val password  = sharedPreferences.getString("password", "")
+        val password  = ""
         val phoneNumber = sharedPreferences.getString("phoneNumber", null)
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)

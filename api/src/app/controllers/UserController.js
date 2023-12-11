@@ -124,6 +124,33 @@ class UserController {
         })
     
     }
+
+    updateUserPasswordById(req, res, next) {
+        db.connect (function (err) {
+            if (err)
+                throw err;
+            const {password} = req.body
+            const sql = `UPDATE users SET password = ? WHERE id = ?`
+            const id = req.params.id
+            const params = [password, id]
+            db.query(sql, params, function (err, result, fields) {
+                if (err) {
+                    res.json({
+                        code: 404,
+                        message: 'Update password failed',
+                        err
+                    })
+                }
+                else {
+                    res.json({
+                        code: 200,
+                        message: 'Update password success',
+                        data: result
+                    });
+                }
+            })
+        })
+    } 
 }
 
 module.exports = new UserController
