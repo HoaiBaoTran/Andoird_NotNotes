@@ -2,6 +2,7 @@ const db = require('../database/connection')
 
 class UserController {
     index (req, res, next) {
+        
         res.json({
             code: 0,
             message: 'User route'
