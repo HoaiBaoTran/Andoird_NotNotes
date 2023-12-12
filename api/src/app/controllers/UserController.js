@@ -2,7 +2,6 @@ const db = require('../database/connection')
 
 class UserController {
     index (req, res, next) {
-        
         res.json({
             code: 0,
             message: 'User route'
@@ -21,7 +20,7 @@ class UserController {
                         data: result
                     });
             });
-          });
+        });
     }
 
     getUserById (req, res, next) {
@@ -42,20 +41,20 @@ class UserController {
                 }
                 else {
                     res.json({
-                            code: 200,
-                            message: 'Get user success',
-                            data: result
+                        code: 200,
+                        message: 'Get user success',
+                        data: result
                     });
                 }
             });
-          });
+        });
     }
 
     getUserByEmail (req, res, next) {
         db.connect(function (err) {
             if (err) throw err;
             const sql = 'SELECT * FROM users WHERE email = ?'
-            const {email} = req.body
+            const { email } = req.body
             db.query(sql, email, function (err, result, fields) {
                 if (err) {
                     throw(err)
@@ -68,9 +67,9 @@ class UserController {
                 }
                 else {
                     res.json({
-                            code: 200,
-                            message: 'Get user success',
-                            data: result
+                        code: 200,
+                        message: 'Get user success',
+                        data: result
                     });
                 }
             })
