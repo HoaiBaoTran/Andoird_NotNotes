@@ -1,6 +1,5 @@
-package com.example.notnotes
+package com.example.notnotes.UserService
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -9,17 +8,15 @@ import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.databinding.ActivitySignupBinding
-import com.example.notnotes.model.User
+import com.example.notnotes.Model.User
 import okhttp3.Callback
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class SignupActivity : AppCompatActivity() {

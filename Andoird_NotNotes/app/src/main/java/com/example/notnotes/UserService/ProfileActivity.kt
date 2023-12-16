@@ -1,13 +1,13 @@
-package com.example.notnotes
+package com.example.notnotes.UserService
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.example.notnotes.R
 import com.example.notnotes.databinding.ActivityProfileBinding
-import com.example.notnotes.model.User
+import com.example.notnotes.Model.User
 
 class ProfileActivity : AppCompatActivity() {
 

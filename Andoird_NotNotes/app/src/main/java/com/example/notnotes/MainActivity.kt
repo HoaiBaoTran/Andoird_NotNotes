@@ -4,12 +4,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.telecom.Call
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.example.notnotes.UserService.ChangePasswordActivity
+import com.example.notnotes.UserService.LoginActivity
+import com.example.notnotes.UserService.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
-import com.example.notnotes.model.User
+import com.example.notnotes.Model.User
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request

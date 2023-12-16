@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:backgroundTint="#00FFFFFF"
     android:padding="8dp"
-    tools:context=".LoginActivity">
+    tools:context=".UserService.LoginActivity">
 
     <TextView
         android:id="@+id/tvName"

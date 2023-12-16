@@ -3,7 +3,7 @@ const taskRouter = require('./task.js')
 
 function route(app) {
     app.use('/api/users', userRouter)
-    app.use('/api/task',taskRouter)
+    app.use('/api/tasks',taskRouter)
 }
 
 module.exports = route

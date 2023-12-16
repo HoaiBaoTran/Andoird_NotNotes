@@ -1,4 +1,4 @@
-package com.example.notnotes.model
+package com.example.notnotes.Model
 
 data class User(var email: String) {
     var id: Int = -1;

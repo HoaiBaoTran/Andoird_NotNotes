@@ -1,4 +1,4 @@
-package com.example.notnotes
+package com.example.notnotes.UserService
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,8 +7,9 @@ import android.os.Handler
 import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import com.example.notnotes.MainActivity
 import com.example.notnotes.databinding.ActivityLoginBinding
-import com.example.notnotes.model.User
+import com.example.notnotes.Model.User
 import okhttp3.Callback
 import okhttp3.FormBody
 import okhttp3.OkHttpClient

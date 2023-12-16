@@ -9,7 +9,7 @@ class Task {
                 if (err) throw err;
                 res.json({
                     code: 200,
-                    message: 'Get all users success',
+                    message: 'Get all tasks success',
                     data: result
                 });
             });
