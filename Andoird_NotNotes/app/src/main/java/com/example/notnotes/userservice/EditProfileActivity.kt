@@ -2,8 +2,6 @@ package com.example.notnotes.userservice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
@@ -13,21 +11,12 @@ import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivityEditProfileBinding
 import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.model.User
-import com.example.notnotes.model.UserTemp
-import okhttp3.Callback
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.IOException
-import java.lang.Exception
 
 class EditProfileActivity : AppCompatActivity(), FirebaseListener {
 
     private lateinit var binding: ActivityEditProfileBinding
     private lateinit var database: FirebaseConnection
-    private lateinit var user: UserTemp
+    private lateinit var user: User
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,9 +75,9 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         return true
     }
 
-    private fun getUserFromField() : UserTemp {
+    private fun getUserFromField() : User {
 
-        val user = UserTemp()
+        val user = User()
         user.fullName = binding.etName.text.toString()
 
         val email = binding.etEmail.text.toString()
@@ -120,7 +109,7 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         return user
     }
 
-    private fun updateUserSession(user: UserTemp) {
+    private fun updateUserSession(user: User) {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.apply {
@@ -134,7 +123,7 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         }
     }
 
-    private fun getUserSession(): UserTemp {
+    private fun getUserSession(): User {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val fullName = sharedPreferences.getString("fullName", "")
         val userName = sharedPreferences.getString("userName", "")
@@ -144,7 +133,7 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return UserTemp(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
+        return User(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
     }
 
     private fun loadUserInfo() {
@@ -203,7 +192,7 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onUsernameExist(user: UserTemp) {
+    override fun onUsernameExist(user: User) {
         val userField = getUserFromField()
         user.email = userField.email
         user.fullName = userField.fullName

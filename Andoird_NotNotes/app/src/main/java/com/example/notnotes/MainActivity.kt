@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.example.notnotes.userservice.ChangePasswordActivity
@@ -12,19 +11,11 @@ import com.example.notnotes.userservice.LoginActivity
 import com.example.notnotes.userservice.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
 import com.example.notnotes.model.User
-import com.example.notnotes.model.UserTemp
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.IOException
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var user: UserTemp
+    private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getUserSession(): UserTemp {
+    private fun getUserSession(): User {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val fullName = sharedPreferences.getString("fullName", "")
         val userName = sharedPreferences.getString("userName", "")
@@ -47,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return UserTemp(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
+        return User(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

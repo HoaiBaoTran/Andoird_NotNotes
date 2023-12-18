@@ -3,8 +3,6 @@ package com.example.notnotes.userservice
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.MainActivity
@@ -13,16 +11,6 @@ import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivityLoginBinding
 import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.model.User
-import com.example.notnotes.model.UserTemp
-import com.google.firebase.FirebaseApp
-import okhttp3.Callback
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.IOException
-import java.lang.Exception
 
 class LoginActivity : AppCompatActivity(), FirebaseListener {
 
@@ -54,13 +42,13 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         }
     }
 
-    private fun getUserFromField() : UserTemp {
+    private fun getUserFromField() : User {
         val username = binding.etUsernameLogin.text.toString()
         val password = binding.etPasswordLogin.text.toString()
-        return UserTemp(username, password)
+        return User(username, password)
     }
 
-    private fun checkUserData(user: UserTemp) {
+    private fun checkUserData(user: User) {
         database.checkUsernameExist(user.userName)
     }
 
@@ -78,7 +66,7 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
     }
 
 
-    private fun saveUserSession(user: UserTemp) {
+    private fun saveUserSession(user: User) {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.apply {
@@ -114,7 +102,7 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         return true
     }
 
-    override fun onUsernameExist(user: UserTemp) {
+    override fun onUsernameExist(user: User) {
         val userField = getUserFromField()
         if (userField.userName != user.userName ||
             userField.password != user.password) {

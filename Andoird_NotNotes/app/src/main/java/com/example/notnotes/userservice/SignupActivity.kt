@@ -9,7 +9,7 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivitySignupBinding
 import com.example.notnotes.listener.FirebaseListener
-import com.example.notnotes.model.UserTemp
+import com.example.notnotes.model.User
 import java.util.regex.Pattern
 
 class SignupActivity : AppCompatActivity(), FirebaseListener {
@@ -63,11 +63,11 @@ class SignupActivity : AppCompatActivity(), FirebaseListener {
         }
     }
 
-    private fun getUserFromField() : UserTemp {
+    private fun getUserFromField() : User {
         val name = binding.etNameSignup.text.toString()
         val userName = binding.etUsernameSignup.text.toString()
         val password = binding.etPasswordSignup.text.toString()
-        return UserTemp(name, userName, password)
+        return User(name, userName, password)
     }
 
     private fun isValidUsername (username: String) : Boolean {
@@ -133,7 +133,7 @@ class SignupActivity : AppCompatActivity(), FirebaseListener {
 
     }
 
-    override fun onUsernameExist(user: UserTemp) {
+    override fun onUsernameExist(user: User) {
         val title = getString(R.string.username_error)
         val message = getString(R.string.username_has_been_used)
         showDialog(title, message)

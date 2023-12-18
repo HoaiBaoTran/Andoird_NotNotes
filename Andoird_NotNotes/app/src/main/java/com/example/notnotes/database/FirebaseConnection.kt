@@ -2,11 +2,10 @@ package com.example.notnotes.database
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseListener
-import com.example.notnotes.model.UserTemp
+import com.example.notnotes.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -34,7 +33,7 @@ class FirebaseConnection(
         reference = db.getReference(NOTE_TABLE)
     }
 
-    fun changePasswordUser(user: UserTemp) {
+    fun changePasswordUser(user: User) {
         connectUserRef()
         reference.child(user.userName).setValue(user)
             .addOnCompleteListener {
@@ -47,7 +46,7 @@ class FirebaseConnection(
             }
     }
 
-    fun updateUserData(user: UserTemp) {
+    fun updateUserData(user: User) {
         connectUserRef()
         reference.child(user.userName).setValue(user)
             .addOnCompleteListener {
@@ -60,7 +59,7 @@ class FirebaseConnection(
             }
     }
 
-    fun registerUser(user: UserTemp) {
+    fun registerUser(user: User) {
         connectUserRef()
         reference.child(user.userName).setValue(user)
             .addOnCompleteListener {
@@ -78,9 +77,9 @@ class FirebaseConnection(
         reference.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var isExist = false
-                var userRes = UserTemp()
+                var userRes = User()
                 for (userSnapshot in snapshot.children) {
-                    val user = userSnapshot.getValue(UserTemp::class.java)
+                    val user = userSnapshot.getValue(User::class.java)
                     if (user?.userName == userName) {
                         userRes = user
                         isExist = true

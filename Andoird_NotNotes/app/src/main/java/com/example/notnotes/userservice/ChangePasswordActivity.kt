@@ -2,8 +2,6 @@ package com.example.notnotes.userservice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
@@ -11,15 +9,7 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivityChangePasswordBinding
 import com.example.notnotes.listener.FirebaseListener
-import com.example.notnotes.model.UserTemp
-import okhttp3.Callback
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.IOException
-import java.lang.Exception
+import com.example.notnotes.model.User
 import java.util.regex.Pattern
 
 class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
@@ -117,7 +107,7 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onUsernameExist(user: UserTemp) {
+    override fun onUsernameExist(user: User) {
         val oldPassword = binding.etOldPassword.text.toString()
         if (oldPassword != user.password) {
             val title = getString(R.string.password_error)

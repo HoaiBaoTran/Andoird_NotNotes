@@ -8,12 +8,11 @@ import android.view.MenuItem
 import com.example.notnotes.R
 import com.example.notnotes.databinding.ActivityProfileBinding
 import com.example.notnotes.model.User
-import com.example.notnotes.model.UserTemp
 
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
-    private lateinit var user: UserTemp
+    private lateinit var user: User
 
     private val NO_INFORMATION = "Không có thông tin"
 
@@ -30,7 +29,7 @@ class ProfileActivity : AppCompatActivity() {
             openEditProfileActivity()
         }
     }
-    private fun getUserSession(): UserTemp {
+    private fun getUserSession(): User {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val fullName = sharedPreferences.getString("fullName", "")
         val userName = sharedPreferences.getString("userName", "")
@@ -40,7 +39,7 @@ class ProfileActivity : AppCompatActivity() {
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return UserTemp(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
+        return User(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
     }
 
     override fun onResume() {
