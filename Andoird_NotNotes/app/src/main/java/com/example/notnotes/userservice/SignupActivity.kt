@@ -1,21 +1,18 @@
 package com.example.notnotes.userservice
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivitySignupBinding
+import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.model.UserTemp
-import java.util.Timer
 import java.util.regex.Pattern
-import kotlin.concurrent.schedule
 
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity(), FirebaseListener {
 
     private lateinit var binding: ActivitySignupBinding
     private lateinit var database: FirebaseConnection
@@ -30,6 +27,8 @@ class SignupActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
+        database = FirebaseConnection(this, this)
+
         binding.btnSignup.setOnClickListener {
             if (!isValidField(binding.etNameSignup)
                 || !isValidField(binding.etUsernameSignup)
@@ -40,7 +39,6 @@ class SignupActivity : AppCompatActivity() {
                 val message = getString(R.string.please_fill_all_the_field)
                 showDialog(title, message)
             } else {
-                val name = binding.etNameSignup.text.toString()
                 val userName = binding.etUsernameSignup.text.toString()
                 val password = binding.etPasswordSignup.text.toString()
                 val confirmPassword = binding.etConfirmPasswordSignup.text.toString()
@@ -61,16 +59,17 @@ class SignupActivity : AppCompatActivity() {
                     showDialog(title, message)
                 }
                 else {
-                    val user = UserTemp(name, userName, password)
-                    val database = FirebaseConnection(this)
-                    if (!database.isUsernameExist(userName)) {
-//                        database.registerUser(user)
-//                        Log.e("Signup_Activity", "Register")
-                    }
-//                    Log.e("Signup_Activity", database.isUsernameExist(userName).toString())
+                    database.checkUsernameExist(userName)
                 }
             }
         }
+    }
+
+    private fun getUserFromField() : UserTemp {
+        val name = binding.etNameSignup.text.toString()
+        val userName = binding.etUsernameSignup.text.toString()
+        val password = binding.etPasswordSignup.text.toString()
+        return UserTemp(name, userName, password)
     }
 
     private fun isValidUsername (username: String) : Boolean {
@@ -121,5 +120,24 @@ class SignupActivity : AppCompatActivity() {
             android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStartAccess() {
+
+    }
+
+    override fun onRegisterUser() {
+        val user = getUserFromField()
+        database.registerUser(user)
+    }
+
+    override fun onFailure() {
+
+    }
+
+    override fun onUsernameExist() {
+        val title = getString(R.string.username_error)
+        val message = getString(R.string.username_has_been_used)
+        showDialog(title, message)
     }
 }
