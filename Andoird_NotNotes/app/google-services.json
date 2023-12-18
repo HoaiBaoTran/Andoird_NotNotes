@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "973540058066",
+    "firebase_url": "https://notnotes-project-id-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "notnotes-project-id",
+    "storage_bucket": "notnotes-project-id.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973540058066:android:1f3a8b4042ff2ce379de0b",
+        "android_client_info": {
+          "package_name": "com.example.notnotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEcZxHEWbsZdpsH7TBk_NgE0ZsR20FPGo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

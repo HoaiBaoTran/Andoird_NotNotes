@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.NotNotes" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.NotNotes" parent="Base.Theme.NotNotes" />
+  <!-- Base application theme. -->
+    <style name="Base.MyAppThemeSwitch" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+<!--    <style name="MyAppThemeSwitch" parent="Base.MyAppThemeSwitch" />-->
+</resources>
