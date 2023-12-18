@@ -84,7 +84,7 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         editor.apply {
             putString("fullName", user.fullName)
             putString("email", user.email)
-            putString("username", user.userName)
+            putString("userName", user.userName)
             putString("password", "")
             putString("phoneNumber", user.phoneNumber)
             putString("address", user.address)

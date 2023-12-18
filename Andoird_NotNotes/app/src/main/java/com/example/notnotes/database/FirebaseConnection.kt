@@ -34,6 +34,19 @@ class FirebaseConnection(
         reference = db.getReference(NOTE_TABLE)
     }
 
+    fun changePasswordUser(user: UserTemp) {
+        connectUserRef()
+        reference.child(user.userName).setValue(user)
+            .addOnCompleteListener {
+                val title = context.applicationContext.getString(R.string.Annoucement)
+                val message = context.applicationContext.getString(R.string.change_password_success)
+                showDialog(title, message)
+                Timer().schedule(3000) {
+                    (context as Activity).finish()
+                }
+            }
+    }
+
     fun registerUser(user: UserTemp) {
         connectUserRef()
         reference.child(user.userName).setValue(user)
@@ -68,7 +81,7 @@ class FirebaseConnection(
                 }
             }
             override fun onCancelled(error: DatabaseError) {
-
+                firebaseListener.onFailure()
             }
         })
     }

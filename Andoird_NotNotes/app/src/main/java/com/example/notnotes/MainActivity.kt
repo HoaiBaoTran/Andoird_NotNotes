@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         user = getUserSession()
 
-        binding.tvHello.text = "Hello ${user.userName}"
+        binding.tvHello.text = "Hello ${user.fullName}"
 
     }
 
