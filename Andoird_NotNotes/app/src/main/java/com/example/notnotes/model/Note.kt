@@ -1,19 +1,12 @@
 package com.example.notnotes.model
 
-data class Note constructor(
-    var name: String) {
-    var id: Int = -1
+class Note() {
+    var userName: String = ""
+    var title: String = ""
     var description: String = ""
-    var progress: Double = -1.0
+    var progress: Double = 0.0
     var status: Int = 0
 
-    constructor(id: Int, name: String, description: String,
-                progress: Double, status: Int) : this(name) {
-        this.id = id
-        this.description = description
-        this.progress = progress
-        this.status = status
-    }
 
 
 }

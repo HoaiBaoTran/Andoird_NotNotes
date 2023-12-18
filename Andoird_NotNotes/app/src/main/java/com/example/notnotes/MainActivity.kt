@@ -2,20 +2,34 @@ package com.example.notnotes
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.example.notnotes.userservice.ChangePasswordActivity
 import com.example.notnotes.userservice.LoginActivity
 import com.example.notnotes.userservice.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
+import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
+import com.example.notnotes.noteservice.MyNoteAdapter
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var noteAdapter: MyNoteAdapter
+    private lateinit var noteList: ArrayList<Note>
     private lateinit var user: User
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +37,51 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         user = getUserSession()
+        initViews()
 
-        binding.tvHello.text = "Hello ${user.fullName}"
+    }
 
+    private fun initViews() {
+        initHelloTextView()
+        initRecyclerView()
+    }
+
+    private fun initHelloTextView() {
+        val userName = user.fullName
+        val formattedString = getString(R.string.formatted_string, userName)
+
+        val spannableString = SpannableString(formattedString)
+
+        val start = formattedString.indexOf(userName)
+        val end = start + userName.length
+        val styleSpan = StyleSpan(Typeface.BOLD)
+        spannableString.setSpan(styleSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val colorSpan = ForegroundColorSpan(resources.getColor(R.color.pink))
+        spannableString.setSpan(colorSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        binding.tvUsername.text = spannableString
+    }
+
+    private fun initRecyclerView() {
+        noteList = ArrayList()
+        noteAdapter = MyNoteAdapter(noteList)
+        binding.recyclerview.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(
+                this.context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+
+            addItemDecoration(
+                DividerItemDecoration(
+                    this.context,
+                    RecyclerView.VERTICAL
+                )
+            )
+            adapter = noteAdapter
+        }
     }
 
     private fun getUserSession(): User {

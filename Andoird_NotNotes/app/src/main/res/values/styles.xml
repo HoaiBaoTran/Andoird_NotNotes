@@ -5,7 +5,7 @@
         <item name="android:textSize">12dp</item>
     </style>
 
-    <style name="MyAppThemeSwitch" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="MyAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#3F51B5</item>
         <item name="colorPrimaryDark">#303F9F</item>
@@ -13,7 +13,6 @@
         <item name="colorControlNormal">#ff0000</item>
         <item name="colorButtonNormal">#3F51B5</item>
     </style>
-
 
     <style name="BrandedSwitch.control" parent="Theme.AppCompat.Light">
         <!-- active thumb & track color (30% transparency) -->
