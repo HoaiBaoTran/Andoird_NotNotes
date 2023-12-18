@@ -8,11 +8,12 @@ import android.view.MenuItem
 import com.example.notnotes.R
 import com.example.notnotes.databinding.ActivityProfileBinding
 import com.example.notnotes.model.User
+import com.example.notnotes.model.UserTemp
 
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
-    private lateinit var user: User
+    private lateinit var user: UserTemp
 
     private val NO_INFORMATION = "Không có thông tin"
 
@@ -29,17 +30,17 @@ class ProfileActivity : AppCompatActivity() {
             openEditProfileActivity()
         }
     }
-    private fun getUserSession(): User {
+    private fun getUserSession(): UserTemp {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        val id = sharedPreferences.getInt("id", -1)
-        val name = sharedPreferences.getString("name", "")
-        val email = sharedPreferences.getString("email", "")
-        val password  = ""
+        val fullName = sharedPreferences.getString("fullName", "")
+        val userName = sharedPreferences.getString("userName", "")
+        val password = ""
+        val email = sharedPreferences.getString("email", null)
         val phoneNumber = sharedPreferences.getString("phoneNumber", null)
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return User(id, name!!, email!!, password, phoneNumber, address, job, homepage)
+        return UserTemp(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
     }
 
     override fun onResume() {
@@ -50,33 +51,38 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun loadUserInfo() {
         binding.apply {
-            tvNameInfo.text = user.name
-            tvName.text = user.name
-            tvEmailInfo.text = user.email
+            tvNameInfo.text = user.fullName
+            tvName.text = user.fullName
+        }
+
+        binding.tvEmailInfo.text = if (user.email == null) {
+            NO_INFORMATION
+        } else {
+            user.email
         }
 
 
-        binding.tvPhoneNumberInfo.text = if (user.phoneNumber == "null") {
+        binding.tvPhoneNumberInfo.text = if (user.phoneNumber == null) {
             NO_INFORMATION
         } else {
             user.phoneNumber
         }
 
-        binding.tvAddressInfo.text = if(user.address == "null") {
+        binding.tvAddressInfo.text = if(user.address == null) {
             NO_INFORMATION
         }
         else {
             user.address
         }
 
-        binding.tvJobInfo.text = if (user.job == "null") {
+        binding.tvJobInfo.text = if (user.job == null) {
             NO_INFORMATION
         }
         else {
             user.job
         }
 
-        binding.tvHomepageInfo.text = if (user.homepage == "null") {
+        binding.tvHomepageInfo.text = if (user.homepage == null) {
             NO_INFORMATION
         }
         else {

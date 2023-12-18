@@ -47,6 +47,19 @@ class FirebaseConnection(
             }
     }
 
+    fun updateUserData(user: UserTemp) {
+        connectUserRef()
+        reference.child(user.userName).setValue(user)
+            .addOnCompleteListener {
+                val title = context.applicationContext.getString(R.string.Annoucement)
+                val message = context.getString(R.string.update_user_success)
+                showDialog(title, message)
+                Timer().schedule(3000) {
+                    (context as Activity).finish()
+                }
+            }
+    }
+
     fun registerUser(user: UserTemp) {
         connectUserRef()
         reference.child(user.userName).setValue(user)

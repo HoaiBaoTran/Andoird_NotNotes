@@ -9,8 +9,11 @@ import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
+import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivityEditProfileBinding
+import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.model.User
+import com.example.notnotes.model.UserTemp
 import okhttp3.Callback
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -20,13 +23,12 @@ import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
 
-class EditProfileActivity : AppCompatActivity() {
+class EditProfileActivity : AppCompatActivity(), FirebaseListener {
 
     private lateinit var binding: ActivityEditProfileBinding
-    private lateinit var user: User
+    private lateinit var database: FirebaseConnection
+    private lateinit var user: UserTemp
 
-    private val SUCCESS_CODE = 200
-    private val NOT_FOUND_CODE = 404
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,22 +37,32 @@ class EditProfileActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
+        database = FirebaseConnection(this, this)
+
         user = getUserSession()
         loadUserInfo()
 
         binding.btnSave.setOnClickListener {
-            if (!isValidField(binding.etName) || !isValidField(binding.etEmail))
+            if (!isValidField(binding.etName))
             {
-                showDialog("Lỗi thông tin trống", "Email và tên không được để trống")
+                val title = getString(R.string.name_error)
+                val message = getString(R.string.user_fullname_not_empty)
+                showDialog(title, message)
             }
             else {
-                updateUserInfo()
+                val user = getUserFromField()
                 updateUserSession(user)
-                updateUserDatabase(user)
+                val userName = getUserNameUserSession()
+                database.checkUsernameExist(userName!!)
             }
 
 
         }
+    }
+
+    private fun getUserNameUserSession(): String? {
+        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
+        return sharedPreferences.getString("userName", "")
     }
 
     private fun showDialog(title: String, message: String) {
@@ -74,14 +86,21 @@ class EditProfileActivity : AppCompatActivity() {
         return true
     }
 
-    private fun updateUserInfo() : User {
-        user.email = binding.etEmail.text.toString()
-        user.name = binding.etName.text.toString()
+    private fun getUserFromField() : UserTemp {
 
+        val user = UserTemp()
+        user.fullName = binding.etName.text.toString()
+
+        val email = binding.etEmail.text.toString()
         val phoneNumber = binding.etPhoneNumber.text.toString()
         val address = binding.etAddress.text.toString()
         val job = binding.etJob.text.toString()
         val homepage = binding.etHomepage.text.toString()
+
+        if (email.isNotEmpty()) {
+            user.email = email
+        }
+
         if (phoneNumber.isNotEmpty()) {
             user.phoneNumber = phoneNumber
         }
@@ -99,16 +118,14 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         return user
-
     }
 
-    private fun updateUserSession(user: User) {
+    private fun updateUserSession(user: UserTemp) {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.apply {
-            putString("name", user.name)
+            putString("fullName", user.fullName)
             putString("email", user.email)
-            putString("password", user.password)
             putString("phoneNumber", user.phoneNumber)
             putString("address", user.address)
             putString("job", user.job)
@@ -117,101 +134,53 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun getUserSession(): User {
+    private fun getUserSession(): UserTemp {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        val id = sharedPreferences.getInt("id", -1)
-        val name = sharedPreferences.getString("name", "")
-        val email = sharedPreferences.getString("email", "")
-        val password  = ""
+        val fullName = sharedPreferences.getString("fullName", "")
+        val userName = sharedPreferences.getString("userName", "")
+        val password = ""
+        val email = sharedPreferences.getString("email", null)
         val phoneNumber = sharedPreferences.getString("phoneNumber", null)
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return User(id, name!!, email!!, password!!, phoneNumber, address, job, homepage)
+        return UserTemp(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
     }
 
     private fun loadUserInfo() {
         binding.apply {
-            etName.setText(user.name)
-            etEmail.setText(user.email)
-            tvNameEditProfile.text = user.name
+            etName.setText(user.fullName)
+            tvNameEditProfile.text = user.fullName
         }
 
-        if (user.address != "null") {
+        if (user.address != null) {
             binding.etAddress.setText(user.address)
         }
         else {
             binding.etAddress.setText("")
         }
 
-        if (user.homepage != "null") {
+        if (user.homepage != null) {
             binding.etHomepage.setText(user.homepage)
         }
         else {
             binding.etHomepage.setText("")
         }
 
-        if (user.phoneNumber != "null") {
+        if (user.phoneNumber != null) {
             binding.etPhoneNumber.setText(user.phoneNumber)
         }
         else {
             binding.etPhoneNumber.setText("")
         }
 
-        if (user.job != "null") {
+        if (user.job != null) {
             binding.etJob.setText(user.job)
         }
         else {
             binding.etJob.setText("")
         }
 
-    }
-
-    private fun updateUserDatabase(user: User) {
-        val url = "http://10.0.2.2:8081/api/users/${user.id}"
-        val body = FormBody.Builder()
-            .add("name", user.name)
-            .add("email", user.email)
-            .add("phoneNumber", user.phoneNumber.toString())
-            .add("address", user.address.toString())
-            .add("job", user.job.toString())
-            .add("homepage", user.homepage.toString())
-            .build()
-
-        val client = OkHttpClient()
-        val request: Request = Request.Builder()
-            .url(url)
-            .put(body)
-            .build();
-
-        client.newCall(request).enqueue(object: Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) {
-                Log.d("MAIN_ACTIVITY_FAIL", e.message.toString());
-            }
-
-            override fun onResponse(call: okhttp3.Call, response: Response) {
-                try {
-                    val responseData = response.body?.string();
-                    val json  = JSONObject(responseData!!)
-                    val jsonCode = json.getInt("code")
-                    runOnUiThread {
-                        if (jsonCode == NOT_FOUND_CODE) {
-                            showDialog("Lỗi", "Email đã được sử dụng")
-                        }
-                        else if (jsonCode == SUCCESS_CODE){
-                            showDialog("Thông báo", "Cập nhật thông tin người dùng thành công")
-                            Handler().postDelayed({
-                                Log.d("MAIN_ACTIVITY", user.toString())
-                                finish()
-                            }, 3000)
-                        }
-                    }
-
-                } catch (e: Exception) {
-                    Log.d("MAIN_ACTIVITY_EXCEPTION", e.message.toString())
-                }
-            }
-        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -232,6 +201,29 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onUsernameExist(user: UserTemp) {
+        val userField = getUserFromField()
+        user.email = userField.email
+        user.fullName = userField.fullName
+        user.job = userField.job
+        user.address = userField.address
+        user.homepage = userField.homepage
+        user.phoneNumber = userField.phoneNumber
+        database.updateUserData(user)
+    }
+
+    override fun onStartAccess() {
+
+    }
+
+    override fun onUserNotExist() {
+
+    }
+
+    override fun onFailure() {
+
     }
 
 
