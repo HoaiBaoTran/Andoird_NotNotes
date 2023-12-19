@@ -267,4 +267,8 @@ class MainActivity :
         val NOTE_KEY = "note_key"
     }
 
+    override fun onBackPressed() {
+        showComponents()
+        super.onBackPressed()
+    }
 }
