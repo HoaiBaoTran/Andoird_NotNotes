@@ -1,5 +1,7 @@
 package com.example.notnotes.noteservice
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,14 +9,34 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notnotes.R
+import com.example.notnotes.listener.ItemClickListener
 import com.example.notnotes.model.Note
 
-class MyNoteAdapter(private val noteList: ArrayList<Note>) : RecyclerView.Adapter<MyNoteAdapter.MyViewHolder>() {
+class MyNoteAdapter(
+    private val context: Context,
+    private val noteList: ArrayList<Note>,
+    private val onItemClickListener: ItemClickListener
+) : RecyclerView.Adapter<MyNoteAdapter.MyViewHolder>() {
 
-    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvTitle = itemView.findViewById<TextView>(R.id.tvTitle)
-        val tvContent = itemView.findViewById<TextView>(R.id.tvContent)
-        val btnDelete = itemView.findViewById<ImageButton>(R.id.btnDeleteItem)
+    inner class MyViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
+        val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
+        val tvContent: TextView = itemView.findViewById(R.id.tvContent)
+        val tvLabel: TextView = itemView.findViewById(R.id.tvLabel)
+        val tvProgress: TextView = itemView.findViewById(R.id.tvProgress)
+        val btnDelete: ImageButton = itemView.findViewById(R.id.btnDeleteItem)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+        override fun onClick(v: View?) {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                val clickedItem = noteList[position]
+                onItemClickListener.onItemClick(clickedItem)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -29,9 +51,22 @@ class MyNoteAdapter(private val noteList: ArrayList<Note>) : RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val note = noteList[position]
-        val smallDescription = note.description.slice(listOf(0, 200))
+        var smallContent: String? = null
+        smallContent = if (note.content!!.length >= 200) {
+            note.content?.slice(0..200) + "..."
+        } else {
+            note.content!!
+        }
 
         holder.tvTitle.text = note.title
-        holder.tvContent.text = smallDescription
+        holder.tvContent.text = smallContent
+        holder.tvProgress.text = context.applicationContext.getString(
+            R.string.progress, note.progress)
+        holder.tvLabel.text = context.applicationContext.getString(
+            R.string.label, note.label)
+
+        holder.btnDelete.setOnClickListener {
+            onItemClickListener.onDeleteItemClick(note)
+        }
     }
 }

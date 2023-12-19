@@ -9,6 +9,7 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivitySignupBinding
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import java.util.regex.Pattern
 
@@ -130,6 +131,10 @@ class SignupActivity : AppCompatActivity(), FirebaseListener {
     }
 
     override fun onFailure() {
+
+    }
+
+    override fun onReadNoteListComplete(notes: List<Note>) {
 
     }
 

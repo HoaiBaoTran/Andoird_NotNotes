@@ -9,25 +9,39 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.userservice.ChangePasswordActivity
 import com.example.notnotes.userservice.LoginActivity
 import com.example.notnotes.userservice.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
+import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.listener.FragmentListener
+import com.example.notnotes.listener.ItemClickListener
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.example.notnotes.noteservice.MyNoteAdapter
+import com.example.notnotes.noteservice.NoteDetailFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity :
+    AppCompatActivity(),
+    FragmentListener,
+    FirebaseListener,
+    ItemClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var noteAdapter: MyNoteAdapter
     private lateinit var noteList: ArrayList<Note>
+    private lateinit var database: FirebaseConnection
     private lateinit var user: User
 
 
@@ -37,8 +51,50 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         user = getUserSession()
+        database = FirebaseConnection(this, this)
         initViews()
 
+        binding.fab.setOnClickListener {
+            openNoteDetailFragment(null)
+        }
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            database.getNotes(user.userName)
+        }
+
+    }
+
+    private fun openNoteDetailFragment(bundle: Bundle?) {
+        hideComponents()
+
+        val fragment = NoteDetailFragment()
+        fragment.arguments = bundle
+        fragment.setFragmentListener(this)
+
+        val fragmentManager: FragmentManager = supportFragmentManager
+
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+        fragmentTransaction.replace(R.id.fragmentContainer, fragment)
+
+        fragmentTransaction.addToBackStack("NoteDetailFragment")
+
+        fragmentTransaction.commit()
+    }
+
+
+
+    private fun hideComponents () {
+        binding.tvUsername.visibility = View.GONE
+        binding.recyclerview.visibility = View.GONE
+        binding.fab.visibility = View.GONE
+        binding.fragmentContainer.visibility = View.VISIBLE
+    }
+     private fun showComponents () {
+        binding.tvUsername.visibility = View.VISIBLE
+        binding.recyclerview.visibility = View.VISIBLE
+        binding.fab.visibility = View.VISIBLE
+        binding.fragmentContainer.visibility = View.GONE
     }
 
     private fun initViews() {
@@ -65,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
         noteList = ArrayList()
-        noteAdapter = MyNoteAdapter(noteList)
+        noteAdapter = MyNoteAdapter(this, noteList, this)
         binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(
@@ -82,6 +138,7 @@ class MainActivity : AppCompatActivity() {
             )
             adapter = noteAdapter
         }
+        database.getNotes(user.userName)
     }
 
     private fun getUserSession(): User {
@@ -145,5 +202,69 @@ class MainActivity : AppCompatActivity() {
         startActivity(profileIntent)
     }
 
+    // -- Fragment Listener --
+
+    override fun onFragmentClosed() {
+        showComponents()
+    }
+
+
+    // -- Firebase Listener --
+    override fun onUsernameExist(user: User) {
+
+    }
+
+    override fun onStartAccess() {
+
+    }
+
+    override fun onUserNotExist() {
+
+    }
+
+    override fun onFailure() {
+
+    }
+
+    override fun onReadNoteListComplete(notes: List<Note>) {
+        noteList.clear()
+        noteList.addAll(notes)
+        noteAdapter.notifyDataSetChanged()
+    }
+
+
+    // -- Item Click Listener --
+    override fun onItemClick(note: Note) {
+        val bundle = Bundle()
+        bundle.putParcelable(NOTE_KEY, note)
+        openNoteDetailFragment(bundle)
+    }
+
+    override fun onDeleteItemClick(note: Note) {
+        val title = "Xóa note"
+        val message = "Bạn có chắc rằng mình muốn xóa note"
+        showDialogConfirm(title, message, note)
+    }
+
+    private fun showDialogConfirm(title: String, message: String, note: Note) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Xóa") { dialog, _ ->
+                database.deleteNote(note, user.userName)
+                database.getNotes(user.userName)
+            }
+            .setNegativeButton("Hủy bỏ") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    companion object {
+        val NOTE_KEY = "note_key"
+    }
 
 }

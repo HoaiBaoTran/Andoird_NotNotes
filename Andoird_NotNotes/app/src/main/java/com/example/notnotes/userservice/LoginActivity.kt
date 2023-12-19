@@ -10,6 +10,7 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivityLoginBinding
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 
 class LoginActivity : AppCompatActivity(), FirebaseListener {
@@ -127,6 +128,10 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
     }
 
     override fun onFailure() {
+
+    }
+
+    override fun onReadNoteListComplete(notes: List<Note>) {
 
     }
 }

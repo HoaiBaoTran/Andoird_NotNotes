@@ -2,9 +2,11 @@ package com.example.notnotes.database
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -29,8 +31,64 @@ class FirebaseConnection(
         reference = db.getReference(USER_TABLE)
     }
 
-    private fun connectNoteRef () {
-        reference = db.getReference(NOTE_TABLE)
+    private fun connectNoteRef (userName: String) {
+        reference = db.getReference(NOTE_TABLE).child(userName)
+    }
+
+    fun addNote(note: Note, userName: String) {
+        connectNoteRef(userName)
+        val key = reference.push().key
+        note.id = key!!
+        reference.child(note.id).setValue(note)
+            .addOnCompleteListener {
+                val title = context.applicationContext.getString(R.string.Annoucement)
+                val message = "Thêm note thành công "
+                showDialog(title, message)
+            }
+    }
+
+    fun editNote(note: Note, userName: String) {
+        connectNoteRef(userName)
+        reference.child(note.id).setValue(note)
+            .addOnCompleteListener {
+                val title = context.applicationContext.getString(R.string.Annoucement)
+                val message = "Sửa note thành công"
+                showDialog(title, message)
+            }
+    }
+
+    fun deleteNote(note: Note, userName: String) {
+        connectNoteRef(userName)
+        reference.child(note.id).removeValue()
+            .addOnCompleteListener {
+                val title = context.applicationContext.getString(R.string.Annoucement)
+                val message = "Xóa note thành công"
+                showDialog(title, message)
+            }
+            .addOnFailureListener {
+                val title = context.applicationContext.getString(R.string.Annoucement)
+                val message = "Xóa note thất bại"
+                showDialog(title, message)
+            }
+    }
+
+    fun getNotes(userName: String) {
+        connectNoteRef(userName)
+        val notes = ArrayList<Note>()
+        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (noteSnapshot in snapshot.children) {
+                    val note = noteSnapshot.getValue(Note::class.java)
+                    if (note != null) {
+                        notes.add(note)
+                    }
+                }
+                firebaseListener.onReadNoteListComplete(notes)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                firebaseListener.onFailure()
+            }
+        })
     }
 
     fun changePasswordUser(user: User) {
@@ -103,7 +161,7 @@ class FirebaseConnection(
         builder
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Ok") { dialog, which ->
+            .setPositiveButton("Ok") { dialog, _ ->
                 dialog.dismiss()
             }
 

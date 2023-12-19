@@ -10,6 +10,7 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivityEditProfileBinding
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 
 class EditProfileActivity : AppCompatActivity(), FirebaseListener {
@@ -212,6 +213,10 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
     }
 
     override fun onFailure() {
+
+    }
+
+    override fun onReadNoteListComplete(notes: List<Note>) {
 
     }
 
