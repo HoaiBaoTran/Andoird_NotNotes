@@ -7,11 +7,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
+import com.example.notnotes.listener.FirebaseLoginUserListener
 import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.model.User
 import com.example.notnotes.userservice.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
@@ -26,6 +28,7 @@ class FirebaseAuthentication (
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firebaseDataWriter = FirebaseDataWriter(context)
     var firebaseRegisterUserListener: FirebaseRegisterUserListener? = null
+    var firebaseLoginUserListener: FirebaseLoginUserListener? = null
 
     fun registerUser(user: User) {
         auth.createUserWithEmailAndPassword(user.email, user.password).addOnCompleteListener {
@@ -73,6 +76,37 @@ class FirebaseAuthentication (
                         firebaseRegisterUserListener!!.onFailure()
                     }
                 }
+        }
+    }
+
+    fun loginUser(user: User) {
+        auth.signInWithEmailAndPassword(user.email, user.password).addOnCompleteListener {
+            task ->
+                if (task.isSuccessful) {
+                    val message = context.getString(R.string.login_success)
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    firebaseLoginUserListener!!.onLoginUserSuccess()
+                }
+                else {
+                    try {
+                        throw task.exception!!
+                    } catch (e: FirebaseAuthInvalidUserException) {
+                        val message = context.getString(R.string.user_not_exist_or_wrong_password)
+                        val title = context.getString(R.string.login_error)
+                        showDialog(title, message)
+                        firebaseLoginUserListener!!.onFailure()
+                    } catch (e: FirebaseAuthInvalidCredentialsException) {
+                        val message = context.getString(R.string.user_not_exist_or_wrong_password)
+                        val title = context.getString(R.string.login_error)
+                        showDialog(title, message)
+                        firebaseLoginUserListener!!.onFailure()
+                    }
+                    catch (e: Exception) {
+                        Log.e("FirebaseAuthentication", e.message!!)
+                        firebaseLoginUserListener!!.onFailure()
+                    }
+                }
+
         }
     }
 

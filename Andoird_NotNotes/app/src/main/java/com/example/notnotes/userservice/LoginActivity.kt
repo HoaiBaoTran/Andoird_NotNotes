@@ -3,7 +3,9 @@ package com.example.notnotes.userservice
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
+import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.MainActivity
@@ -11,10 +13,11 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.databinding.ActivityLoginBinding
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.listener.FirebaseLoginUserListener
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 
-class LoginActivity : AppCompatActivity(), FirebaseListener {
+class LoginActivity : AppCompatActivity(), FirebaseLoginUserListener {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var database: FirebaseConnection
@@ -38,13 +41,15 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
                 showDialog(title, message)
             }
             else if (!Patterns.EMAIL_ADDRESS.matcher(binding.etEmailLogin.text.toString()).matches()) {
-                val title = getString(R.string.invalid_email_error)
                 val message = getString(R.string.your_email_is_invalid_message)
-                showDialog(title, message)
+                binding.etEmailLogin.requestFocus()
+                binding.etEmailLogin.error = message
             }
             else {
                 val user = getUserFromField()
+
                 database.loginUser(user)
+                binding.progressBar.visibility = View.VISIBLE
             }
         }
 
@@ -57,6 +62,8 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
 
     private fun isValidField(editText: EditText) : Boolean {
         if (editText.text.isEmpty()) {
+            val message = getString(R.string.please_fill_all_the_field)
+            editText.error = message
             editText.requestFocus()
             return false
         }
@@ -69,16 +76,12 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         return User(email, password)
     }
 
-    private fun checkUserData(user: User) {
-//        database.checkUsernameExist(user.userName)
-    }
-
     private fun showDialog(title: String, message: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Ok") { dialog, which ->
+            .setPositiveButton("Ok") { dialog, _ ->
                 dialog.dismiss()
             }
 
@@ -115,40 +118,13 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         startActivity(signupIntent)
     }
 
-
-//    override fun onUsernameExist(user: User) {
-//        val userField = getUserFromField()
-//        if (userField.userName != user.userName ||
-//            userField.password != user.password) {
-//            val title = getString(R.string.user_account_error)
-//            val message = getString(R.string.wrong_username_or_password)
-//            showDialog(title, message)
-//        }
-//        else {
-//            saveUserSession(user)
-//            openMainActivity()
-//        }
-//    }
-
-    override fun onUserNotExist() {
-        val title = getString(R.string.user_account_error)
-        val message = getString(R.string.wrong_username_or_password)
-        showDialog(title, message)
+    override fun onLoginUserSuccess() {
+        Log.d("LoginActivity", "CALL")
+        binding.progressBar.visibility = View.GONE
     }
 
-    override fun onUsernameExist(user: User) {
-
-    }
-
-    override fun onStartAccess() {
-
-    }
 
     override fun onFailure() {
-
-    }
-
-    override fun onReadNoteListComplete(notes: List<Note>) {
-
+        binding.progressBar.visibility = View.GONE
     }
 }

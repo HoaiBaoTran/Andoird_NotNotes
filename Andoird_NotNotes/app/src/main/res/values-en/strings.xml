@@ -97,4 +97,7 @@
     <string name="your_email_is_invalid_message">Your email is invalid</string>
     <string name="your_email_is_invalid_or_already_in_use">Your email is invalid or already in use</string>
     <string name="email_has_been_used_please_choose_another_email">Email has been used. Please choose another email</string>
+    <string name="user_not_exist_or_wrong_password">User not exists or wrong user account</string>
+    <string name="login_error">Login error</string>
+    <string name="login_success">Login successfully</string>
 </resources>

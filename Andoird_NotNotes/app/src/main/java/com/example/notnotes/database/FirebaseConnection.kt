@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.listener.FirebaseLoginUserListener
 import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
@@ -23,6 +24,13 @@ class FirebaseConnection(
 
     private lateinit var firebaseListener: FirebaseListener
     private lateinit var firebaseRegisterUserListener: FirebaseRegisterUserListener
+    private lateinit var firebaseLoginUserListener: FirebaseLoginUserListener
+
+    private val db = Firebase.database
+    private lateinit var reference: DatabaseReference
+    private val firebaseAuth = FirebaseAuthentication(context)
+    private val USER_TABLE = "User"
+    private val NOTE_TABLE = "Note"
 
     constructor(context: Context, firebaseListener: FirebaseListener) : this(context) {
         this.firebaseListener = firebaseListener
@@ -30,13 +38,14 @@ class FirebaseConnection(
 
     constructor(context: Context, firebaseRegisterUserListener: FirebaseRegisterUserListener) : this(context) {
         this.firebaseRegisterUserListener = firebaseRegisterUserListener
+        firebaseAuth.firebaseRegisterUserListener = firebaseRegisterUserListener
     }
 
-    private val db = Firebase.database
-    private lateinit var reference: DatabaseReference
-    private val firebaseAuth = FirebaseAuthentication(context)
-    private val USER_TABLE = "User"
-    private val NOTE_TABLE = "Note"
+    constructor(context: Context, firebaseLoginUserListener: FirebaseLoginUserListener) : this(context) {
+        this.firebaseLoginUserListener = firebaseLoginUserListener
+        firebaseAuth.firebaseLoginUserListener = firebaseLoginUserListener
+    }
+
 
     private fun connectUserRef () {
         reference = db.getReference(USER_TABLE)
@@ -130,12 +139,11 @@ class FirebaseConnection(
 
     fun registerUser(user: User) {
         // Authenticate user
-        firebaseAuth.firebaseRegisterUserListener = firebaseRegisterUserListener
         firebaseAuth.registerUser(user)
     }
 
     fun loginUser(user: User) {
-        firebaseAuth
+        firebaseAuth.loginUser(user)
     }
 
 //    fun checkUsernameExist (userName: String) {
