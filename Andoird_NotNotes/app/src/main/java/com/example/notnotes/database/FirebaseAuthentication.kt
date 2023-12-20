@@ -38,6 +38,8 @@ class FirebaseAuthentication (
                     // Write user data to db
                     firebaseDataWriter.writeUserData(user, id)
 
+                    firebaseRegisterUserListener!!.onRegisterUserSuccess()
+
                     val title = context.applicationContext.getString(R.string.Annoucement)
                     val message = context.applicationContext.getString(R.string.signup_success_message)
                     showDialog(title, message)

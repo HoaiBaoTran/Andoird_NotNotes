@@ -135,6 +135,6 @@ class SignupActivity : AppCompatActivity(), FirebaseRegisterUserListener {
     }
 
     override fun onRegisterUserSuccess() {
-
+        binding.progressBar.visibility = View.GONE
     }
 }
