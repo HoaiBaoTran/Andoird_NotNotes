@@ -41,6 +41,12 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
                 checkUserData(user)
             }
         }
+
+        binding.tvForgetPassword.setOnClickListener {
+            val title = getString(R.string.forgot_password)
+            val message = getString(R.string.relax_and_try_to_remember_your_password)
+            showDialog(title, message)
+        }
     }
 
     private fun getUserFromField() : User {

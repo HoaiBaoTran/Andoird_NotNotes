@@ -81,4 +81,6 @@
     <string name="progress">Tiến độ: %s%%</string>
     <string name="label">Nhãn: %s</string>
     <string name="add_note_success">Thêm note thành công</string>
+    <string name="forgot_password">Quên mật khẩu ???</string>
+    <string name="relax_and_try_to_remember_your_password">Hãy thư giản và cố nhớ lại mật khẩu của bạn nhé !!!</string>
 </resources>
