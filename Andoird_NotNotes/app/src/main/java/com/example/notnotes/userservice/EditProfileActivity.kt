@@ -34,7 +34,7 @@ class EditProfileActivity :
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.progressBar.visibility = View.GONE
-        database = FirebaseService(this, this)
+        database = FirebaseService(this, this, this)
         val firebaseUser = database.auth.currentUser
         if (firebaseUser != null) {
             database.getUserFromFirebaseUser(firebaseUser)

@@ -16,6 +16,7 @@ import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.example.notnotes.userservice.LoginActivity
 import com.google.firebase.Firebase
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -36,6 +37,7 @@ class FirebaseService(
     private lateinit var firebaseRegisterUserListener: FirebaseRegisterUserListener
     private lateinit var firebaseLoginUserListener: FirebaseLoginUserListener
     private lateinit var firebaseReadUserListener: FirebaseReadUserListener
+    private lateinit var firebaseUpdateUserListener: FirebaseUpdateUserListener
 
     private val db = Firebase.database
     private lateinit var reference: DatabaseReference
@@ -45,10 +47,6 @@ class FirebaseService(
 
     private val USER_TABLE = "User"
     private val NOTE_TABLE = "Note"
-
-//    constructor(context: Context, firebaseListener: FirebaseListener) : this(context) {
-//        this.firebaseListener = firebaseListener
-//    }
 
     constructor(context: Context, firebaseRegisterUserListener: FirebaseRegisterUserListener) : this(context) {
         this.firebaseRegisterUserListener = firebaseRegisterUserListener
@@ -63,10 +61,16 @@ class FirebaseService(
         firebaseRepository.firebaseReadUserListener = firebaseReadUserListener
     }
 
+    constructor(context: Context, firebaseUpdateUserListener: FirebaseUpdateUserListener) : this(context) {
+        this.firebaseUpdateUserListener = firebaseUpdateUserListener
+        firebaseRepository.firebaseUpdateUserListener = firebaseUpdateUserListener
+    }
+
     constructor(context: Context,
                 firebaseReadUserListener: FirebaseReadUserListener,
                 firebaseUpdateUserListener: FirebaseUpdateUserListener) : this (context) {
         this.firebaseReadUserListener = firebaseReadUserListener
+        this.firebaseUpdateUserListener = firebaseUpdateUserListener
         firebaseRepository.firebaseReadUserListener = firebaseReadUserListener
         firebaseRepository.firebaseUpdateUserListener = firebaseUpdateUserListener
                 }
@@ -79,6 +83,8 @@ class FirebaseService(
     private fun connectNoteRef (userName: String) {
         reference = db.getReference(NOTE_TABLE).child(userName)
     }
+
+    // -- NOTE --
 
     fun addNote(note: Note, userName: String) {
         connectNoteRef(userName)
@@ -136,7 +142,28 @@ class FirebaseService(
         })
     }
 
-//    fun changePasswordUser(user: User) {
+    // -- USER --
+
+    fun changePasswordUser(oldPassword: String, newPassword: String) {
+        val firebaseUser = auth.currentUser
+        val email = firebaseUser!!.email!!
+        val credential = EmailAuthProvider.getCredential(email, oldPassword)
+
+        firebaseUser?.reauthenticate(credential)
+            ?.addOnCompleteListener {
+                task ->
+                    if (task.isSuccessful) {
+                        firebaseUser.updatePassword(newPassword).addOnCompleteListener {
+                            updateTask ->
+                                if (updateTask.isSuccessful) {
+                                    firebaseUpdateUserListener.onUpdateUserSuccess()
+                                }
+                                else {
+                                    firebaseUpdateUserListener.onUpdateUserFailure()
+                                }
+                        }
+                    }
+            }
 //        connectUserRef()
 //        reference.child(user.userName).setValue(user)
 //            .addOnCompleteListener {
@@ -147,7 +174,7 @@ class FirebaseService(
 //                    (context as Activity).finish()
 //                }
 //            }
-//    }
+    }
 
     fun updateUser(user: User) {
         val firebaseUser: FirebaseUser? = auth.currentUser

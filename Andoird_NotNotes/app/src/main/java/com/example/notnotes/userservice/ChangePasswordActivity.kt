@@ -2,18 +2,26 @@ package com.example.notnotes.userservice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivityChangePasswordBinding
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.listener.FirebaseUpdateUserListener
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
+import java.util.Timer
 import java.util.regex.Pattern
+import kotlin.concurrent.schedule
 
-class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
+class ChangePasswordActivity :
+    AppCompatActivity(),
+    FirebaseUpdateUserListener {
 
     private lateinit var binding: ActivityChangePasswordBinding
     private lateinit var database: FirebaseService
@@ -23,9 +31,11 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
         binding = ActivityChangePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-//        database = FirebaseService(this, this)
+        initShowHidePasswordFeature()
+
+        database = FirebaseService(this, this)
 
         binding.btnChangePassword.setOnClickListener {
             if (!isValidField(binding.etOldPassword)
@@ -40,29 +50,64 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
                 val password = binding.etNewPassword.text.toString()
                 val confirmPassword = binding.etConfirmNewPassword.text.toString()
                 if (!validPassword(password)) {
-                    val title = getString(R.string.password_error)
                     val message = getString(R.string.password_pattern)
-                    showDialog(title, message)
+                    binding.etNewPassword.error = message
+                    binding.etNewPassword.requestFocus()
                 }
                 else if (!comparePassword(password, confirmPassword)) {
-                    val title = getString(R.string.password_error)
                     val message = getString(R.string.password_unfit)
-                    showDialog(title, message)
+                    binding.etNewPassword.error = message
+                    binding.etConfirmNewPassword.error = message
+                    binding.etConfirmNewPassword.requestFocus()
                 }
                 else {
-                    val userName = getUserNameUserSession()
-//                    database.checkUsernameExist(userName!!)
+                    binding.progressBar.visibility = View.VISIBLE
+                    val oldPassword = binding.etOldPassword.text.toString()
+                    val newPassword = binding.etNewPassword.text.toString()
+                    database.changePasswordUser(oldPassword, newPassword)
                 }
             }
         }
 
     }
 
-    private fun getUserNameUserSession(): String? {
-        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        return sharedPreferences.getString("userName", "")
-    }
+    private fun initShowHidePasswordFeature() {
+        binding.imgOldPassword.setOnClickListener {
+            if (binding.etOldPassword.transformationMethod
+                    .equals(HideReturnsTransformationMethod.getInstance())) {
+                binding.etOldPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.imgOldPassword.setImageResource(R.drawable.hide)
+            }
+            else {
+                binding.etOldPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.imgOldPassword.setImageResource(R.drawable.view)
+            }
+        }
 
+        binding.imgNewPassword.setOnClickListener {
+            if (binding.etNewPassword.transformationMethod
+                    .equals(HideReturnsTransformationMethod.getInstance())) {
+                binding.etNewPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.imgNewPassword.setImageResource(R.drawable.hide)
+            }
+            else {
+                binding.etNewPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.imgNewPassword.setImageResource(R.drawable.view)
+            }
+        }
+
+        binding.imgConfirmNewPassword.setOnClickListener {
+            if (binding.etConfirmNewPassword.transformationMethod
+                    .equals(HideReturnsTransformationMethod.getInstance())) {
+                binding.etConfirmNewPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.imgConfirmNewPassword.setImageResource(R.drawable.hide)
+            }
+            else {
+                binding.etConfirmNewPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.imgConfirmNewPassword.setImageResource(R.drawable.view)
+            }
+        }
+    }
 
 
     private fun comparePassword(
@@ -81,6 +126,8 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
 
     private fun isValidField(editText: EditText) : Boolean {
         if (editText.text.isEmpty()) {
+            val message = getString(R.string.please_fill_all_the_field)
+            editText.error = message
             editText.requestFocus()
             return false
         }
@@ -108,29 +155,18 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onUsernameExist(user: User) {
-        val oldPassword = binding.etOldPassword.text.toString()
-        if (oldPassword != user.password) {
-            val title = getString(R.string.password_error)
-            val message = getString(R.string.wrong_password)
-            showDialog(title, message)
-        }
-        else {
-            user.password = binding.etNewPassword.text.toString()
-//            database.changePasswordUser(user)
+    override fun onUpdateUserSuccess() {
+        val title = getString(R.string.Annoucement)
+        val message = getString(R.string.change_password_success)
+        showDialog(title, message)
+        binding.progressBar.visibility = View.GONE
+        Timer().schedule(3000) {
+            finish()
         }
     }
 
-    override fun onStartAccess() {
+    override fun onUpdateUserFailure() {
+        binding.progressBar.visibility = View.GONE
     }
 
-    override fun onUserNotExist() {
-    }
-
-    override fun onFailure() {
-    }
-
-    override fun onReadNoteListComplete(notes: List<Note>) {
-
-    }
 }
