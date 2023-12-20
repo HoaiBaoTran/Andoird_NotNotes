@@ -1,7 +1,9 @@
 package com.example.notnotes.database
 
 import android.content.Context
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
@@ -51,6 +53,20 @@ class FirebaseRepository(private val context: Context) {
                         firebaseNoteListener!!.onAddNoteFailure()
                     }
 
+            }
+    }
+
+    fun editNote(note: Note, userId: String) {
+        connectNoteRef(userId)
+        Log.d("FirebaseRepository", note.id)
+        reference.child(note.id).setValue(note)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    firebaseNoteListener!!.onUpdateNoteSuccess()
+                }
+                else {
+                    firebaseNoteListener!!.onUpdateNoteFailure()
+                }
             }
     }
 

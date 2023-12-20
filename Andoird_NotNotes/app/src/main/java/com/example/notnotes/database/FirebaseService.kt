@@ -104,14 +104,10 @@ class FirebaseService(
         firebaseRepository.addNote(note, userId)
     }
 
-    fun editNote(note: Note, userName: String) {
-        connectNoteRef(userName)
-        reference.child(note.id).setValue(note)
-            .addOnCompleteListener {
-                val title = context.applicationContext.getString(R.string.Annoucement)
-                val message = "Sửa note thành công"
-                showDialog(title, message)
-            }
+    fun editNote(note: Note) {
+        val firebaseUser = auth.currentUser
+        val userId = firebaseUser!!.uid
+        firebaseRepository.editNote(note, userId)
     }
 
     fun deleteNote(note: Note, userName: String) {

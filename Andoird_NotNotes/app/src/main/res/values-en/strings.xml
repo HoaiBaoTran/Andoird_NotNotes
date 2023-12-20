@@ -102,4 +102,5 @@
     <string name="login_success">Login successfully</string>
     <string name="email_not_verified">Email Not Verified</string>
     <string name="please_verify_your_email">Please verify your email now. You can not login without email verification</string>
+    <string name="update_note_success">Update note successfully</string>
 </resources>

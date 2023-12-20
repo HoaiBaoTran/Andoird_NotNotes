@@ -65,7 +65,7 @@ class NoteDetailFragment :
         binding.btnSaveNote.setOnClickListener {
             if (checkValidField()) {
                 if (isEdit) {
-//                    editNoteInDatabase()
+                    editNoteInDatabase()
                 }
                 else {
                     addNoteToDatabase()
@@ -108,15 +108,14 @@ class NoteDetailFragment :
         database.addNote(note)
     }
 
-//    private fun editNoteInDatabase() {
-//        val note = getNoteFromField()
-//        editNote.progress = note.progress
-//        editNote.title = note.title
-//        editNote.content = note.content
-//        editNote.label = note.label
-//        database.editNote(editNote, user.userName)
-//        closeFragment()
-//    }
+    private fun editNoteInDatabase() {
+        val note = getNoteFromField()
+        editNote.progress = note.progress
+        editNote.title = note.title
+        editNote.content = note.content
+        editNote.label = note.label
+        database.editNote(editNote)
+    }
 
     private fun showDialog(title: String, message: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
@@ -149,6 +148,19 @@ class NoteDetailFragment :
     }
 
     override fun onAddNoteFailure() {
+
+    }
+
+    override fun onUpdateNoteSuccess() {
+        val title = getString(R.string.Annoucement)
+        val message = getString(R.string.update_note_success)
+        showDialog(title, message)
+        Timer().schedule(3000) {
+            closeFragment()
+        }
+    }
+
+    override fun onUpdateNoteFailure() {
 
     }
 

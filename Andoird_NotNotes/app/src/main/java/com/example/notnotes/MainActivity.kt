@@ -63,7 +63,7 @@ class MainActivity :
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
-//            database.getNotes(user.userName)
+            database.getNotes()
         }
 
         val firebaseUser = database.auth.currentUser
@@ -212,7 +212,6 @@ class MainActivity :
             showComponents()
         }
     }
-
 
 
     // -- Item Click Listener --
