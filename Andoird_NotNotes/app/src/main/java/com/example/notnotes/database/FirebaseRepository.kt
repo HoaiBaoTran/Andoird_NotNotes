@@ -2,8 +2,10 @@ package com.example.notnotes.database
 
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
+import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
+import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -19,6 +21,7 @@ class FirebaseRepository(private val context: Context) {
 
     var firebaseReadUserListener: FirebaseReadUserListener? = null
     var firebaseUpdateUserListener: FirebaseUpdateUserListener? = null
+    var firebaseNoteListener: FirebaseNoteListener? = null
 
     private val USER_TABLE = "User"
     private val NOTE_TABLE = "Note"
@@ -27,9 +30,29 @@ class FirebaseRepository(private val context: Context) {
         reference = db.getReference(USER_TABLE)
     }
 
-    private fun connectNoteRef (userName: String) {
-        reference = db.getReference(NOTE_TABLE).child(userName)
+    private fun connectNoteRef (userId: String) {
+        reference = db.getReference(NOTE_TABLE).child(userId)
     }
+
+    // -- Note --
+    fun addNote(note: Note, userId: String) {
+        connectNoteRef(userId)
+
+        val key = reference.push().key
+        reference.child(key!!).setValue(note)
+            .addOnCompleteListener {
+                task ->
+                    if (task.isSuccessful) {
+                        firebaseNoteListener!!.onAddNoteSuccess()
+                    }
+                    else {
+                        firebaseNoteListener!!.onAddNoteFailure()
+                    }
+
+            }
+    }
+
+    // -- User --
 
     fun writeUserData(user: User, id: String?) {
         connectUserRef()
@@ -70,16 +93,4 @@ class FirebaseRepository(private val context: Context) {
         })
     }
 
-    private fun showDialog(title: String, message: String) {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("Ok") { dialog, _ ->
-                dialog.dismiss()
-            }
-
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
-    }
 }

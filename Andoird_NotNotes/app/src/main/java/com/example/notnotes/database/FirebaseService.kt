@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.listener.FirebaseLoginUserListener
+import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
@@ -38,6 +39,7 @@ class FirebaseService(
     private lateinit var firebaseLoginUserListener: FirebaseLoginUserListener
     private lateinit var firebaseReadUserListener: FirebaseReadUserListener
     private lateinit var firebaseUpdateUserListener: FirebaseUpdateUserListener
+    private lateinit var firebaseNoteListener: FirebaseNoteListener
 
     private val db = Firebase.database
     private lateinit var reference: DatabaseReference
@@ -75,27 +77,26 @@ class FirebaseService(
         firebaseRepository.firebaseUpdateUserListener = firebaseUpdateUserListener
                 }
 
+    constructor(context: Context, firebaseNoteListener: FirebaseNoteListener) : this(context) {
+        this.firebaseNoteListener = firebaseNoteListener
+        firebaseRepository.firebaseNoteListener = firebaseNoteListener
+    }
+
 
     private fun connectUserRef () {
         reference = db.getReference(USER_TABLE)
     }
 
-    private fun connectNoteRef (userName: String) {
-        reference = db.getReference(NOTE_TABLE).child(userName)
+    private fun connectNoteRef (userId: String) {
+        reference = db.getReference(NOTE_TABLE).child(userId)
     }
 
     // -- NOTE --
 
-    fun addNote(note: Note, userName: String) {
-        connectNoteRef(userName)
-        val key = reference.push().key
-        note.id = key!!
-        reference.child(note.id).setValue(note)
-            .addOnCompleteListener {
-                val title = context.applicationContext.getString(R.string.Annoucement)
-                val message = "Thêm note thành công "
-                showDialog(title, message)
-            }
+    fun addNote(note: Note) {
+        val firebaseUser = auth.currentUser
+        val userId = firebaseUser!!.uid
+        firebaseRepository.addNote(note, userId)
     }
 
     fun editNote(note: Note, userName: String) {
@@ -183,7 +184,6 @@ class FirebaseService(
         user.email = email!!
         firebaseRepository.updateUser(user, id)
     }
-
 
     fun registerUser(user: User) {
         auth.createUserWithEmailAndPassword(user.email, user.password).addOnCompleteListener {
@@ -292,33 +292,6 @@ class FirebaseService(
         alertDialog.create()
         alertDialog.show()
     }
-
-//    fun checkUsernameExist (userName: String) {
-//        firebaseAuth.firebaseRegisterUserListener = firebaseRegisterUserListener
-//        connectUserRef()
-//        reference.addListenerForSingleValueEvent(object: ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                var isExist = false
-//                var userRes = User()
-//                for (userSnapshot in snapshot.children) {
-//                    val user = userSnapshot.getValue(User::class.java)
-//                    if (user?.userName == userName) {
-//                        userRes = user
-//                        isExist = true
-//                    }
-//                }
-//                if (isExist) {
-////                    firebaseListener.onUsernameExist(userRes)
-//                }
-//                else {
-////                    firebaseListener.onUserNotExist()
-//                }
-//            }
-//            override fun onCancelled(error: DatabaseError) {
-////                firebaseListener.onFailure()
-//            }
-//        })
-//    }
 
     private fun showDialog(title: String, message: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)

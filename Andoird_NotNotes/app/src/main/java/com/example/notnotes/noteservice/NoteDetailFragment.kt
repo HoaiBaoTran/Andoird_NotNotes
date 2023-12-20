@@ -13,11 +13,16 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.FragmentNoteDetailBinding
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FragmentListener
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
+import java.util.Timer
+import kotlin.concurrent.schedule
 
-class NoteDetailFragment : Fragment(), FirebaseListener {
+class NoteDetailFragment :
+    Fragment(),
+    FirebaseNoteListener {
 
     private lateinit var binding: FragmentNoteDetailBinding
     private lateinit var database: FirebaseService
@@ -31,7 +36,7 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentNoteDetailBinding.inflate(inflater, container, false)
-//        database = FirebaseService(requireContext(), this)
+        database = FirebaseService(requireContext(), this)
         return binding.root
     }
 
@@ -48,7 +53,6 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        user = getUserSession()
 
         val note = arguments?.getParcelable<Note>(MainActivity.NOTE_KEY)
         if (note != null) {
@@ -59,14 +63,14 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
 
 
         binding.btnSaveNote.setOnClickListener {
-//            if (checkValidField()) {
-//                if (isEdit) {
+            if (checkValidField()) {
+                if (isEdit) {
 //                    editNoteInDatabase()
-//                }
-//                else {
-//                    addNoteToDatabase()
-//                }
-//            }
+                }
+                else {
+                    addNoteToDatabase()
+                }
+            }
         }
     }
 
@@ -77,20 +81,6 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
         binding.etProgress.setText(note.progress)
     }
 
-    private fun getUserSession(): User {
-        val sharedPreferences = requireActivity().getSharedPreferences("MyPreferences",
-            AppCompatActivity.MODE_PRIVATE
-        )
-        val fullName = sharedPreferences.getString("fullName", "")
-        val userName = sharedPreferences.getString("userName", "")
-        val password = ""
-        val email = sharedPreferences.getString("email", "")
-        val phoneNumber = sharedPreferences.getString("phoneNumber", null)
-        val address = sharedPreferences.getString("address", null)
-        val job  = sharedPreferences.getString("job", null)
-        val homepage = sharedPreferences.getString("homepage", null)
-        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
-    }
 
     private fun checkValidField(): Boolean {
         val title = binding.tietTitle.text.toString()
@@ -113,11 +103,10 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
         return note
     }
 
-//    private fun addNoteToDatabase() {
-//        val note = getNoteFromField()
-//        database.addNote(note, user.userName)
-//        closeFragment()
-//    }
+    private fun addNoteToDatabase() {
+        val note = getNoteFromField()
+        database.addNote(note)
+    }
 
 //    private fun editNoteInDatabase() {
 //        val note = getNoteFromField()
@@ -134,7 +123,7 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
         builder
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Ok") { dialog, which ->
+            .setPositiveButton("Ok") { dialog, _ ->
                 dialog.dismiss()
             }
 
@@ -150,23 +139,16 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
         fragmentListener?.onFragmentClosed()
     }
 
-    override fun onUsernameExist(user: User) {
-
+    override fun onAddNoteSuccess() {
+        val title = getString(R.string.Annoucement)
+        val message = getString(R.string.add_note_success)
+        showDialog(title, message)
+        Timer().schedule(3000) {
+            closeFragment()
+        }
     }
 
-    override fun onStartAccess() {
-
-    }
-
-    override fun onUserNotExist() {
-
-    }
-
-    override fun onFailure() {
-
-    }
-
-    override fun onReadNoteListComplete(notes: List<Note>) {
+    override fun onAddNoteFailure() {
 
     }
 }

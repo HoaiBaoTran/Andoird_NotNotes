@@ -25,6 +25,7 @@ import com.example.notnotes.userservice.LoginActivity
 import com.example.notnotes.userservice.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FragmentListener
 import com.example.notnotes.listener.ItemClickListener
@@ -36,10 +37,8 @@ import com.example.notnotes.noteservice.NoteDetailFragment
 class MainActivity :
     AppCompatActivity(),
     FragmentListener,
-    FirebaseListener,
     FirebaseReadUserListener,
-    ItemClickListener
-{
+    ItemClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var noteAdapter: MyNoteAdapter
@@ -55,9 +54,7 @@ class MainActivity :
 
         binding.progressBar.visibility = View.VISIBLE
 
-//        user = getUserSession()
         database = FirebaseService(this, this)
-//        initViews()
 
         binding.fab.setOnClickListener {
             openNoteDetailFragment(null)
@@ -148,21 +145,9 @@ class MainActivity :
             )
             adapter = noteAdapter
         }
-//        database.getNotes(user.userName)
+//        database.getNotes()
     }
 
-//    private fun getUserSession(): User {
-//        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-//        val fullName = sharedPreferences.getString("fullName", "")
-//        val userName = sharedPreferences.getString("userName", "")
-//        val password = ""
-//        val email = sharedPreferences.getString("email", "")
-//        val phoneNumber = sharedPreferences.getString("phoneNumber", null)
-//        val address = sharedPreferences.getString("address", null)
-//        val job  = sharedPreferences.getString("job", null)
-//        val homepage = sharedPreferences.getString("homepage", null)
-//        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
-//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
@@ -221,32 +206,12 @@ class MainActivity :
     // -- Fragment Listener --
 
     override fun onFragmentClosed() {
-        showComponents()
-    }
-
-
-    // -- Firebase Listener --
-    override fun onUsernameExist(user: User) {
+        runOnUiThread {
+            showComponents()
+        }
 
     }
 
-    override fun onStartAccess() {
-
-    }
-
-    override fun onUserNotExist() {
-
-    }
-
-    override fun onFailure() {
-
-    }
-
-    override fun onReadNoteListComplete(notes: List<Note>) {
-        noteList.clear()
-        noteList.addAll(notes)
-        noteAdapter.notifyDataSetChanged()
-    }
 
 
     // -- Item Click Listener --
@@ -288,6 +253,8 @@ class MainActivity :
         super.onBackPressed()
     }
 
+    // -- Read User Listener --
+
     override fun onReadUserSuccess(user: User) {
         this.user = user
         binding.progressBar.visibility = View.GONE
@@ -297,4 +264,5 @@ class MainActivity :
     override fun onReadUserFailure() {
         binding.progressBar.visibility = View.GONE
     }
+
 }
