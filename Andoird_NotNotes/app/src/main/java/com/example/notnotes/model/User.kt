@@ -2,21 +2,19 @@ package com.example.notnotes.model
 
 class User constructor() {
     var fullName: String = ""
-    var userName: String = ""
+    var email: String = ""
     var password: String = ""
-    var email: String? = null
     var phoneNumber: String? = null
     var address: String? = null
     var job: String? = null
     var homepage: String? = null
 
-    constructor(fullName: String, userName: String, password: String, email: String?,
+    constructor(fullName: String, email: String, password: String,
                 phoneNumber: String?, address: String?, job: String?, homepage: String?) : this()
     {
         this.fullName = fullName
-        this.userName = userName
-        this.password = password
         this.email = email
+        this.password = password
         this.phoneNumber = phoneNumber
         this.address = address
         this.job = job
@@ -24,17 +22,18 @@ class User constructor() {
     }
 
 
-    constructor (fullName: String, userName: String, password: String) : this() {
+    constructor (fullName: String, email: String, password: String) : this() {
         this.fullName = fullName
-        this.userName = userName
+        this.email = email
         this.password = password
     }
-    constructor(userName: String, password: String) : this() {
+
+    constructor(email: String, password: String) : this() {
         this.password = password
-        this.userName = userName
+        this.email = email
     }
 
     override fun toString(): String {
-        return "user[${userName}]"
+        return "user[${email}]"
     }
 }

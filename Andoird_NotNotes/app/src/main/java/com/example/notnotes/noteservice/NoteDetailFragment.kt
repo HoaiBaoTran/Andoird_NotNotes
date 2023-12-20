@@ -1,7 +1,6 @@
 package com.example.notnotes.noteservice
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,14 +59,14 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
 
 
         binding.btnSaveNote.setOnClickListener {
-            if (checkValidField()) {
-                if (isEdit) {
-                    editNoteInDatabase()
-                }
-                else {
-                    addNoteToDatabase()
-                }
-            }
+//            if (checkValidField()) {
+//                if (isEdit) {
+//                    editNoteInDatabase()
+//                }
+//                else {
+//                    addNoteToDatabase()
+//                }
+//            }
         }
     }
 
@@ -85,19 +84,19 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
         val fullName = sharedPreferences.getString("fullName", "")
         val userName = sharedPreferences.getString("userName", "")
         val password = ""
-        val email = sharedPreferences.getString("email", null)
+        val email = sharedPreferences.getString("email", "")
         val phoneNumber = sharedPreferences.getString("phoneNumber", null)
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return User(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
+        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
     }
 
     private fun checkValidField(): Boolean {
         val title = binding.tietTitle.text.toString()
         if (title.isEmpty()) {
             val titleError = getString(R.string.empty_field_error)
-            val message = "Không được để tiêu đề trống"
+            val message = getString(R.string.title_not_empty)
             showDialog(titleError, message)
             return false
         }
@@ -114,21 +113,21 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
         return note
     }
 
-    private fun addNoteToDatabase() {
-        val note = getNoteFromField()
-        database.addNote(note, user.userName)
-        closeFragment()
-    }
+//    private fun addNoteToDatabase() {
+//        val note = getNoteFromField()
+//        database.addNote(note, user.userName)
+//        closeFragment()
+//    }
 
-    private fun editNoteInDatabase() {
-        val note = getNoteFromField()
-        editNote.progress = note.progress
-        editNote.title = note.title
-        editNote.content = note.content
-        editNote.label = note.label
-        database.editNote(editNote, user.userName)
-        closeFragment()
-    }
+//    private fun editNoteInDatabase() {
+//        val note = getNoteFromField()
+//        editNote.progress = note.progress
+//        editNote.title = note.title
+//        editNote.content = note.content
+//        editNote.label = note.label
+//        database.editNote(editNote, user.userName)
+//        closeFragment()
+//    }
 
     private fun showDialog(title: String, message: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())

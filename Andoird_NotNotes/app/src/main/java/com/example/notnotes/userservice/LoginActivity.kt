@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
     }
 
     private fun checkUserData(user: User) {
-        database.checkUsernameExist(user.userName)
+//        database.checkUsernameExist(user.userName)
     }
 
     private fun showDialog(title: String, message: String) {
@@ -73,21 +73,21 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
     }
 
 
-    private fun saveUserSession(user: User) {
-        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.apply {
-            putString("fullName", user.fullName)
-            putString("email", user.email)
-            putString("userName", user.userName)
-            putString("password", "")
-            putString("phoneNumber", user.phoneNumber)
-            putString("address", user.address)
-            putString("job", user.job)
-            putString("homepage", user.homepage)
-            apply()
-        }
-    }
+//    private fun saveUserSession(user: User) {
+//        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        editor.apply {
+//            putString("fullName", user.fullName)
+//            putString("email", user.email)
+//            putString("userName", user.userName)
+//            putString("password", "")
+//            putString("phoneNumber", user.phoneNumber)
+//            putString("address", user.address)
+//            putString("job", user.job)
+//            putString("homepage", user.homepage)
+//            apply()
+//        }
+//    }
 
     private fun openMainActivity () {
         val mainIntent = Intent(this, MainActivity::class.java)
@@ -109,24 +109,28 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         return true
     }
 
-    override fun onUsernameExist(user: User) {
-        val userField = getUserFromField()
-        if (userField.userName != user.userName ||
-            userField.password != user.password) {
-            val title = getString(R.string.user_account_error)
-            val message = getString(R.string.wrong_username_or_password)
-            showDialog(title, message)
-        }
-        else {
-            saveUserSession(user)
-            openMainActivity()
-        }
-    }
+//    override fun onUsernameExist(user: User) {
+//        val userField = getUserFromField()
+//        if (userField.userName != user.userName ||
+//            userField.password != user.password) {
+//            val title = getString(R.string.user_account_error)
+//            val message = getString(R.string.wrong_username_or_password)
+//            showDialog(title, message)
+//        }
+//        else {
+//            saveUserSession(user)
+//            openMainActivity()
+//        }
+//    }
 
     override fun onUserNotExist() {
         val title = getString(R.string.user_account_error)
         val message = getString(R.string.wrong_username_or_password)
         showDialog(title, message)
+    }
+
+    override fun onUsernameExist(user: User) {
+
     }
 
     override fun onStartAccess() {

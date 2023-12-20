@@ -65,7 +65,7 @@
     <string name="signup_success_message">Sign up successfully, back to login screen after 3 seconds !!!</string>
     <string name="username">Username</string>
     <string name="username_error">Username error</string>
-    <string name="username_not_contain_blank_space">Username not contain blank space</string>
+    <string name="field_not_contain_blank_space">email or password not contain blank space</string>
     <string name="username_has_been_used">Username has been used</string>
     <string name="user_account_error">Account error</string>
     <string name="wrong_username_or_password">Wrong username or password</string>
@@ -88,4 +88,13 @@
     <string name="are_you_sure_want_to_delete_note">Are you sure want to delete note</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="language">Language</string>
+    <string name="vietnamese">tiếng Việt</string>
+    <string name="english">English</string>
+    <string name="title_not_empty">Title not empty</string>
+    <string name="no_account">Don\'t have account?</string>
+    <string name="invalid_email_error">Invalid email</string>
+    <string name="your_email_is_invalid_message">Your email is invalid</string>
+    <string name="your_email_is_invalid_or_already_in_use">Your email is invalid or already in use</string>
+    <string name="email_has_been_used_please_choose_another_email">Email has been used. Please choose another email</string>
 </resources>

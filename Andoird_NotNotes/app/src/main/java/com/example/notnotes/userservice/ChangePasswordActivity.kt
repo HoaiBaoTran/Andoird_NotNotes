@@ -51,7 +51,7 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
                 }
                 else {
                     val userName = getUserNameUserSession()
-                    database.checkUsernameExist(userName!!)
+//                    database.checkUsernameExist(userName!!)
                 }
             }
         }
@@ -117,7 +117,7 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
         }
         else {
             user.password = binding.etNewPassword.text.toString()
-            database.changePasswordUser(user)
+//            database.changePasswordUser(user)
         }
     }
 

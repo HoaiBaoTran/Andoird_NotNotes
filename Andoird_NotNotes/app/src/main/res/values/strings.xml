@@ -65,7 +65,7 @@
     <string name="signup_success_message">Đăng kí người dùng thành công, sau 3s chuyển qua màn hình đăng nhập !!!</string>
     <string name="username">Tên tài khoản</string>
     <string name="username_error">Lỗi tên đăng nhập</string>
-    <string name="username_not_contain_blank_space">Tên đăng nhập không được chứa khoảng trắng</string>
+    <string name="field_not_contain_blank_space">email hoặc mật khẩu không được chứa khoảng trắng</string>
     <string name="username_has_been_used">Tên đăng nhập đã được sử dụng</string>
     <string name="user_account_error">Lỗi thông tin tài khoản</string>
     <string name="wrong_username_or_password">Sai tên tài khoản hoặc mật khẩu</string>
@@ -88,4 +88,13 @@
     <string name="are_you_sure_want_to_delete_note">Bạn có chắc rằng mình muốn xóa note</string>
     <string name="delete">Xóa</string>
     <string name="cancel">Hủy bỏ</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="vietnamese">tiếng Việt</string>
+    <string name="english">English</string>
+    <string name="title_not_empty">Không được để tiêu đề trống</string>
+    <string name="no_account">Không có tài khoản?</string>
+    <string name="invalid_email_error">Lỗi email không hợp lệ</string>
+    <string name="your_email_is_invalid_message">Email bạn sử dụng không hợp lệ</string>
+    <string name="your_email_is_invalid_or_already_in_use">Your email is invalid or already in use</string>
+    <string name="email_has_been_used_please_choose_another_email">Email has been used. Please choose another email</string>
 </resources>

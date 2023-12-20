@@ -34,12 +34,12 @@ class ProfileActivity : AppCompatActivity() {
         val fullName = sharedPreferences.getString("fullName", "")
         val userName = sharedPreferences.getString("userName", "")
         val password = ""
-        val email = sharedPreferences.getString("email", null)
+        val email = sharedPreferences.getString("email", "")
         val phoneNumber = sharedPreferences.getString("phoneNumber", null)
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return User(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
+        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
     }
 
     override fun onResume() {

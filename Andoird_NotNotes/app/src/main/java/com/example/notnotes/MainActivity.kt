@@ -9,7 +9,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.notnotes.appservice.SettingActivity
 import com.example.notnotes.database.FirebaseConnection
 import com.example.notnotes.userservice.ChangePasswordActivity
 import com.example.notnotes.userservice.LoginActivity
@@ -59,7 +59,7 @@ class MainActivity :
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
-            database.getNotes(user.userName)
+//            database.getNotes(user.userName)
         }
 
     }
@@ -138,7 +138,7 @@ class MainActivity :
             )
             adapter = noteAdapter
         }
-        database.getNotes(user.userName)
+//        database.getNotes(user.userName)
     }
 
     private fun getUserSession(): User {
@@ -146,12 +146,12 @@ class MainActivity :
         val fullName = sharedPreferences.getString("fullName", "")
         val userName = sharedPreferences.getString("userName", "")
         val password = ""
-        val email = sharedPreferences.getString("email", null)
+        val email = sharedPreferences.getString("email", "")
         val phoneNumber = sharedPreferences.getString("phoneNumber", null)
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return User(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
+        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -165,9 +165,15 @@ class MainActivity :
             R.id.menu_item_profile -> openProfileActivity()
             R.id.menu_item_logout -> logoutAccount()
             R.id.menu_item_change_password -> openChangePasswordActivity()
+            R.id.menu_item_settings -> openSettingActivity()
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun openSettingActivity() {
+        val settingIntent = Intent(this, SettingActivity::class.java)
+        startActivity(settingIntent)
     }
 
     private fun logoutAccount() {
@@ -252,8 +258,8 @@ class MainActivity :
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
-                database.deleteNote(note, user.userName)
-                database.getNotes(user.userName)
+//                database.deleteNote(note, user.userName)
+//                database.getNotes(user.userName)
             }
             .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()

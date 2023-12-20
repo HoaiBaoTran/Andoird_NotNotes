@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.google.firebase.Firebase
@@ -18,12 +19,22 @@ import java.util.Timer
 import kotlin.concurrent.schedule
 
 class FirebaseConnection(
-    private val context: Context,
-    private val firebaseListener: FirebaseListener,
-    ) {
+    private val context: Context) {
+
+    private lateinit var firebaseListener: FirebaseListener
+    private lateinit var firebaseRegisterUserListener: FirebaseRegisterUserListener
+
+    constructor(context: Context, firebaseListener: FirebaseListener) : this(context) {
+        this.firebaseListener = firebaseListener
+    }
+
+    constructor(context: Context, firebaseRegisterUserListener: FirebaseRegisterUserListener) : this(context) {
+        this.firebaseRegisterUserListener = firebaseRegisterUserListener
+    }
 
     private val db = Firebase.database
     private lateinit var reference: DatabaseReference
+    private val firebaseAuth = FirebaseAuthentication(context)
     private val USER_TABLE = "User"
     private val NOTE_TABLE = "Note"
 
@@ -91,70 +102,64 @@ class FirebaseConnection(
         })
     }
 
-    fun changePasswordUser(user: User) {
-        connectUserRef()
-        reference.child(user.userName).setValue(user)
-            .addOnCompleteListener {
-                val title = context.applicationContext.getString(R.string.Annoucement)
-                val message = context.applicationContext.getString(R.string.change_password_success)
-                showDialog(title, message)
-                Timer().schedule(3000) {
-                    (context as Activity).finish()
-                }
-            }
-    }
+//    fun changePasswordUser(user: User) {
+//        connectUserRef()
+//        reference.child(user.userName).setValue(user)
+//            .addOnCompleteListener {
+//                val title = context.applicationContext.getString(R.string.Annoucement)
+//                val message = context.applicationContext.getString(R.string.change_password_success)
+//                showDialog(title, message)
+//                Timer().schedule(3000) {
+//                    (context as Activity).finish()
+//                }
+//            }
+//    }
 
-    fun updateUserData(user: User) {
-        connectUserRef()
-        reference.child(user.userName).setValue(user)
-            .addOnCompleteListener {
-                val title = context.applicationContext.getString(R.string.Annoucement)
-                val message = context.getString(R.string.update_user_success)
-                showDialog(title, message)
-                Timer().schedule(3000) {
-                    (context as Activity).finish()
-                }
-            }
-    }
+//    fun updateUserData(user: User) {
+//        connectUserRef()
+//        reference.child(user.userName).setValue(user)
+//            .addOnCompleteListener {
+//                val title = context.applicationContext.getString(R.string.Annoucement)
+//                val message = context.getString(R.string.update_user_success)
+//                showDialog(title, message)
+//                Timer().schedule(3000) {
+//                    (context as Activity).finish()
+//                }
+//            }
+//    }
 
     fun registerUser(user: User) {
-        connectUserRef()
-        reference.child(user.userName).setValue(user)
-            .addOnCompleteListener {
-                val title = context.applicationContext.getString(R.string.Annoucement)
-                val message = context.applicationContext.getString(R.string.signup_success_message)
-                showDialog(title, message)
-                Timer().schedule(3000) {
-                    (context as Activity).finish()
-                }
-        }
+        // Authenticate user
+        firebaseAuth.firebaseRegisterUserListener = firebaseRegisterUserListener
+        firebaseAuth.registerUser(user)
     }
 
-    fun checkUsernameExist (userName: String) {
-        connectUserRef()
-        reference.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var isExist = false
-                var userRes = User()
-                for (userSnapshot in snapshot.children) {
-                    val user = userSnapshot.getValue(User::class.java)
-                    if (user?.userName == userName) {
-                        userRes = user
-                        isExist = true
-                    }
-                }
-                if (isExist) {
-                    firebaseListener.onUsernameExist(userRes)
-                }
-                else {
-                    firebaseListener.onUserNotExist()
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                firebaseListener.onFailure()
-            }
-        })
-    }
+//    fun checkUsernameExist (userName: String) {
+//        firebaseAuth.firebaseRegisterUserListener = firebaseRegisterUserListener
+//        connectUserRef()
+//        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                var isExist = false
+//                var userRes = User()
+//                for (userSnapshot in snapshot.children) {
+//                    val user = userSnapshot.getValue(User::class.java)
+//                    if (user?.userName == userName) {
+//                        userRes = user
+//                        isExist = true
+//                    }
+//                }
+//                if (isExist) {
+////                    firebaseListener.onUsernameExist(userRes)
+//                }
+//                else {
+////                    firebaseListener.onUserNotExist()
+//                }
+//            }
+//            override fun onCancelled(error: DatabaseError) {
+////                firebaseListener.onFailure()
+//            }
+//        })
+//    }
 
     private fun showDialog(title: String, message: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)

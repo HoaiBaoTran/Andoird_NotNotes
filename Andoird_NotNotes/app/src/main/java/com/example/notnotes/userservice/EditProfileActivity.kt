@@ -43,7 +43,7 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
                 val user = getUserFromField()
                 updateUserSession(user)
                 val userName = getUserNameUserSession()
-                database.checkUsernameExist(userName!!)
+//                database.checkUsernameExist(userName!!)
             }
 
 
@@ -129,12 +129,12 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         val fullName = sharedPreferences.getString("fullName", "")
         val userName = sharedPreferences.getString("userName", "")
         val password = ""
-        val email = sharedPreferences.getString("email", null)
+        val email = sharedPreferences.getString("email", "")
         val phoneNumber = sharedPreferences.getString("phoneNumber", null)
         val address = sharedPreferences.getString("address", null)
         val job  = sharedPreferences.getString("job", null)
         val homepage = sharedPreferences.getString("homepage", null)
-        return User(fullName!!, userName!!, password, email, phoneNumber, address, job, homepage)
+        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
     }
 
     private fun loadUserInfo() {
@@ -201,7 +201,7 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         user.address = userField.address
         user.homepage = userField.homepage
         user.phoneNumber = userField.phoneNumber
-        database.updateUserData(user)
+//        database.updateUserData(user)
     }
 
     override fun onStartAccess() {
