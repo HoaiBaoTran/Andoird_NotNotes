@@ -100,4 +100,6 @@
     <string name="user_not_exist_or_wrong_password">Lỗi người dùng không tồn tại hoặc sai thông tin đăng nhập</string>
     <string name="login_error">Lỗi đăng nhập</string>
     <string name="login_success">Đăng nhập thành công</string>
+    <string name="email_not_verified">Thông báo xác nhận emai</string>
+    <string name="please_verify_your_email">Email bạn chưa xác nhận. Bạn cần xác nhận email của bạn để đăng nhập</string>
 </resources>

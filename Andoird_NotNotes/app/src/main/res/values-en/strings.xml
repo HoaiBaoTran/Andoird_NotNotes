@@ -100,4 +100,6 @@
     <string name="user_not_exist_or_wrong_password">User not exists or wrong user account</string>
     <string name="login_error">Login error</string>
     <string name="login_success">Login successfully</string>
+    <string name="email_not_verified">Email Not Verified</string>
+    <string name="please_verify_your_email">Please verify your email now. You can not login without email verification</string>
 </resources>

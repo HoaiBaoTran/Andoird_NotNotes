@@ -5,61 +5,50 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.example.notnotes.R
+import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivityProfileBinding
+import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.model.User
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity :
+    AppCompatActivity(),
+    FirebaseReadUserListener {
 
     private lateinit var binding: ActivityProfileBinding
+    private lateinit var database: FirebaseService
     private lateinit var user: User
 
-    private val NO_INFORMATION = getString(R.string.no_information)
+    private lateinit var NO_INFORMATION: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        user = getUserSession()
-        loadUserInfo()
+        NO_INFORMATION = getString(R.string.no_information)
+
+        database = FirebaseService(this, this)
+        val firebaseUser = database.auth.currentUser
+        if (firebaseUser != null) {
+            database.getUserFromFirebaseUser(firebaseUser)
+        }
+
+        binding.progressBar.visibility = View.VISIBLE
 
         binding.btnImage.setOnClickListener {
             openEditProfileActivity()
         }
-    }
-    private fun getUserSession(): User {
-        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        val fullName = sharedPreferences.getString("fullName", "")
-        val userName = sharedPreferences.getString("userName", "")
-        val password = ""
-        val email = sharedPreferences.getString("email", "")
-        val phoneNumber = sharedPreferences.getString("phoneNumber", null)
-        val address = sharedPreferences.getString("address", null)
-        val job  = sharedPreferences.getString("job", null)
-        val homepage = sharedPreferences.getString("homepage", null)
-        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        user = getUserSession()
-        loadUserInfo()
     }
 
     private fun loadUserInfo() {
         binding.apply {
             tvNameInfo.text = user.fullName
             tvName.text = user.fullName
+            tvEmailInfo.text = user.email
         }
-
-        binding.tvEmailInfo.text = if (user.email == null) {
-            NO_INFORMATION
-        } else {
-            user.email
-        }
-
 
         binding.tvPhoneNumberInfo.text = if (user.phoneNumber == null) {
             NO_INFORMATION
@@ -113,6 +102,16 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onReadUserSuccess(user: User) {
+        this.user = user
+        loadUserInfo()
+        binding.progressBar.visibility = View.GONE
+    }
+
+    override fun onReadUserFailure() {
+        binding.progressBar.visibility = View.GONE
     }
 
 }

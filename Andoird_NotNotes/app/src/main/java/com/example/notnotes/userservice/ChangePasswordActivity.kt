@@ -6,7 +6,7 @@ import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
-import com.example.notnotes.database.FirebaseConnection
+import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivityChangePasswordBinding
 import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.model.Note
@@ -16,7 +16,7 @@ import java.util.regex.Pattern
 class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
 
     private lateinit var binding: ActivityChangePasswordBinding
-    private lateinit var database: FirebaseConnection
+    private lateinit var database: FirebaseService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +25,7 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
-        database = FirebaseConnection(this, this)
+//        database = FirebaseService(this, this)
 
         binding.btnChangePassword.setOnClickListener {
             if (!isValidField(binding.etOldPassword)

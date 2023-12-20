@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.notnotes.MainActivity
 import com.example.notnotes.R
-import com.example.notnotes.database.FirebaseConnection
+import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.FragmentNoteDetailBinding
 import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.listener.FragmentListener
@@ -20,7 +20,7 @@ import com.example.notnotes.model.User
 class NoteDetailFragment : Fragment(), FirebaseListener {
 
     private lateinit var binding: FragmentNoteDetailBinding
-    private lateinit var database: FirebaseConnection
+    private lateinit var database: FirebaseService
     private lateinit var user: User
     private var fragmentListener: FragmentListener? = null
     private var isEdit = false
@@ -31,7 +31,7 @@ class NoteDetailFragment : Fragment(), FirebaseListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentNoteDetailBinding.inflate(inflater, container, false)
-        database = FirebaseConnection(requireContext(), this)
+//        database = FirebaseService(requireContext(), this)
         return binding.root
     }
 

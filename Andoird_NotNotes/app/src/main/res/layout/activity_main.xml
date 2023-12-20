@@ -8,6 +8,7 @@
     android:padding="4dp"
     android:orientation="vertical">
 
+
     <TextView
         android:padding="16dp"
         android:id="@+id/tvUsername"
@@ -17,11 +18,20 @@
         android:text="@string/formatted_string"
         />
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center"
+        android:elevation="15dp"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

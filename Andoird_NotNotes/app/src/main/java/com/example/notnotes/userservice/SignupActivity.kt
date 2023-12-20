@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
-import com.example.notnotes.database.FirebaseConnection
+import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivitySignupBinding
 import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.model.User
@@ -19,7 +19,7 @@ import java.util.regex.Pattern
 class SignupActivity : AppCompatActivity(), FirebaseRegisterUserListener {
 
     private lateinit var binding: ActivitySignupBinding
-    private lateinit var database: FirebaseConnection
+    private lateinit var database: FirebaseService
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,7 @@ class SignupActivity : AppCompatActivity(), FirebaseRegisterUserListener {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
-        database = FirebaseConnection(this, this)
+        database = FirebaseService(this, this)
 
         binding.imgPassword.setOnClickListener {
             if (binding.etPasswordSignup.transformationMethod

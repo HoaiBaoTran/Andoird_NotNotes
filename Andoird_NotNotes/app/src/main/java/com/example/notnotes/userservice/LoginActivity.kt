@@ -5,31 +5,31 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.MainActivity
 import com.example.notnotes.R
-import com.example.notnotes.database.FirebaseConnection
+import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivityLoginBinding
-import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.listener.FirebaseLoginUserListener
-import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
+import com.google.firebase.auth.FirebaseUser
 
 class LoginActivity : AppCompatActivity(), FirebaseLoginUserListener {
 
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var database: FirebaseConnection
+    private lateinit var database: FirebaseService
+    private var currentUser: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        database = FirebaseConnection(this, this)
+        database = FirebaseService(this, this)
 
         binding.tvSignup.setOnClickListener {
             openSignupActivity()
@@ -103,40 +103,30 @@ class LoginActivity : AppCompatActivity(), FirebaseLoginUserListener {
         dialog.show()
     }
 
-
-//    private fun saveUserSession(user: User) {
-//        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-//        val editor = sharedPreferences.edit()
-//        editor.apply {
-//            putString("fullName", user.fullName)
-//            putString("email", user.email)
-//            putString("userName", user.userName)
-//            putString("password", "")
-//            putString("phoneNumber", user.phoneNumber)
-//            putString("address", user.address)
-//            putString("job", user.job)
-//            putString("homepage", user.homepage)
-//            apply()
-//        }
-//    }
-
     private fun openMainActivity () {
         val mainIntent = Intent(this, MainActivity::class.java)
         startActivity(mainIntent)
         finish()
     }
 
-
     private fun openSignupActivity() {
         val signupIntent = Intent(this, SignupActivity::class.java)
         startActivity(signupIntent)
     }
 
-    override fun onLoginUserSuccess() {
-        Log.d("LoginActivity", "CALL")
+    override fun onLoginUserSuccess(currentUser: FirebaseUser?) {
         binding.progressBar.visibility = View.GONE
+        this.currentUser = currentUser
+        openMainActivity()
     }
 
+    override fun onStart() {
+        super.onStart()
+        if(currentUser != null) {
+            openMainActivity()
+            Toast.makeText(this, "Login Success", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onFailure() {
         binding.progressBar.visibility = View.GONE

@@ -4,19 +4,25 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
-import com.example.notnotes.database.FirebaseConnection
+import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivityEditProfileBinding
-import com.example.notnotes.listener.FirebaseListener
-import com.example.notnotes.model.Note
+import com.example.notnotes.listener.FirebaseReadUserListener
+import com.example.notnotes.listener.FirebaseUpdateUserListener
 import com.example.notnotes.model.User
+import java.util.Timer
+import kotlin.concurrent.schedule
 
-class EditProfileActivity : AppCompatActivity(), FirebaseListener {
+class EditProfileActivity :
+    AppCompatActivity(),
+    FirebaseReadUserListener,
+    FirebaseUpdateUserListener {
 
     private lateinit var binding: ActivityEditProfileBinding
-    private lateinit var database: FirebaseConnection
+    private lateinit var database: FirebaseService
     private lateinit var user: User
 
 
@@ -25,12 +31,14 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        database = FirebaseConnection(this, this)
-
-        user = getUserSession()
-        loadUserInfo()
+        binding.progressBar.visibility = View.GONE
+        database = FirebaseService(this, this)
+        val firebaseUser = database.auth.currentUser
+        if (firebaseUser != null) {
+            database.getUserFromFirebaseUser(firebaseUser)
+        }
 
         binding.btnSave.setOnClickListener {
             if (!isValidField(binding.etName))
@@ -41,18 +49,12 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
             }
             else {
                 val user = getUserFromField()
-                updateUserSession(user)
-                val userName = getUserNameUserSession()
-//                database.checkUsernameExist(userName!!)
+                database.updateUser(user)
+                binding.progressBar.visibility = View.VISIBLE
             }
 
 
         }
-    }
-
-    private fun getUserNameUserSession(): String? {
-        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        return sharedPreferences.getString("userName", "")
     }
 
     private fun showDialog(title: String, message: String) {
@@ -81,15 +83,11 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         val user = User()
         user.fullName = binding.etName.text.toString()
 
-        val email = binding.etEmail.text.toString()
         val phoneNumber = binding.etPhoneNumber.text.toString()
         val address = binding.etAddress.text.toString()
         val job = binding.etJob.text.toString()
         val homepage = binding.etHomepage.text.toString()
 
-        if (email.isNotEmpty()) {
-            user.email = email
-        }
 
         if (phoneNumber.isNotEmpty()) {
             user.phoneNumber = phoneNumber
@@ -108,33 +106,6 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         }
 
         return user
-    }
-
-    private fun updateUserSession(user: User) {
-        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.apply {
-            putString("fullName", user.fullName)
-            putString("email", user.email)
-            putString("phoneNumber", user.phoneNumber)
-            putString("address", user.address)
-            putString("job", user.job)
-            putString("homepage", user.homepage)
-            apply()
-        }
-    }
-
-    private fun getUserSession(): User {
-        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        val fullName = sharedPreferences.getString("fullName", "")
-        val userName = sharedPreferences.getString("userName", "")
-        val password = ""
-        val email = sharedPreferences.getString("email", "")
-        val phoneNumber = sharedPreferences.getString("phoneNumber", null)
-        val address = sharedPreferences.getString("address", null)
-        val job  = sharedPreferences.getString("job", null)
-        val homepage = sharedPreferences.getString("homepage", null)
-        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
     }
 
     private fun loadUserInfo() {
@@ -193,31 +164,29 @@ class EditProfileActivity : AppCompatActivity(), FirebaseListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onUsernameExist(user: User) {
-        val userField = getUserFromField()
-        user.email = userField.email
-        user.fullName = userField.fullName
-        user.job = userField.job
-        user.address = userField.address
-        user.homepage = userField.homepage
-        user.phoneNumber = userField.phoneNumber
-//        database.updateUserData(user)
+
+    override fun onReadUserSuccess(user: User) {
+        this.user = user
+        loadUserInfo()
+        binding.progressBar.visibility = View.GONE
     }
 
-    override fun onStartAccess() {
-
+    override fun onReadUserFailure() {
+        binding.progressBar.visibility = View.GONE
     }
 
-    override fun onUserNotExist() {
-
+    override fun onUpdateUserSuccess() {
+        val title = getString(R.string.Annoucement)
+        val message = getString(R.string.update_user_success)
+        showDialog(title, message)
+        binding.progressBar.visibility = View.GONE
+        Timer().schedule(3000) {
+            finish()
+        }
     }
 
-    override fun onFailure() {
-
-    }
-
-    override fun onReadNoteListComplete(notes: List<Note>) {
-
+    override fun onUpdateUserFailure() {
+        binding.progressBar.visibility = View.GONE
     }
 
 

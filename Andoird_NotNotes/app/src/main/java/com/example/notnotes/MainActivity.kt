@@ -19,12 +19,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notnotes.appservice.SettingActivity
-import com.example.notnotes.database.FirebaseConnection
+import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.userservice.ChangePasswordActivity
 import com.example.notnotes.userservice.LoginActivity
 import com.example.notnotes.userservice.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
 import com.example.notnotes.listener.FirebaseListener
+import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FragmentListener
 import com.example.notnotes.listener.ItemClickListener
 import com.example.notnotes.model.Note
@@ -36,12 +37,14 @@ class MainActivity :
     AppCompatActivity(),
     FragmentListener,
     FirebaseListener,
-    ItemClickListener {
+    FirebaseReadUserListener,
+    ItemClickListener
+{
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var noteAdapter: MyNoteAdapter
     private lateinit var noteList: ArrayList<Note>
-    private lateinit var database: FirebaseConnection
+    private lateinit var database: FirebaseService
     private lateinit var user: User
 
 
@@ -50,9 +53,11 @@ class MainActivity :
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        user = getUserSession()
-        database = FirebaseConnection(this, this)
-        initViews()
+        binding.progressBar.visibility = View.VISIBLE
+
+//        user = getUserSession()
+        database = FirebaseService(this, this)
+//        initViews()
 
         binding.fab.setOnClickListener {
             openNoteDetailFragment(null)
@@ -60,6 +65,11 @@ class MainActivity :
 
         supportFragmentManager.addOnBackStackChangedListener {
 //            database.getNotes(user.userName)
+        }
+
+        val firebaseUser = database.auth.currentUser
+        if (firebaseUser != null) {
+            database.getUserFromFirebaseUser(firebaseUser)
         }
 
     }
@@ -141,18 +151,18 @@ class MainActivity :
 //        database.getNotes(user.userName)
     }
 
-    private fun getUserSession(): User {
-        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
-        val fullName = sharedPreferences.getString("fullName", "")
-        val userName = sharedPreferences.getString("userName", "")
-        val password = ""
-        val email = sharedPreferences.getString("email", "")
-        val phoneNumber = sharedPreferences.getString("phoneNumber", null)
-        val address = sharedPreferences.getString("address", null)
-        val job  = sharedPreferences.getString("job", null)
-        val homepage = sharedPreferences.getString("homepage", null)
-        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
-    }
+//    private fun getUserSession(): User {
+//        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
+//        val fullName = sharedPreferences.getString("fullName", "")
+//        val userName = sharedPreferences.getString("userName", "")
+//        val password = ""
+//        val email = sharedPreferences.getString("email", "")
+//        val phoneNumber = sharedPreferences.getString("phoneNumber", null)
+//        val address = sharedPreferences.getString("address", null)
+//        val job  = sharedPreferences.getString("job", null)
+//        val homepage = sharedPreferences.getString("homepage", null)
+//        return User(fullName!!, email!!, password, phoneNumber, address, job, homepage)
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
@@ -276,5 +286,15 @@ class MainActivity :
     override fun onBackPressed() {
         showComponents()
         super.onBackPressed()
+    }
+
+    override fun onReadUserSuccess(user: User) {
+        this.user = user
+        binding.progressBar.visibility = View.GONE
+        initViews()
+    }
+
+    override fun onReadUserFailure() {
+        binding.progressBar.visibility = View.GONE
     }
 }
