@@ -50,20 +50,21 @@ class SignupActivity : AppCompatActivity(), FirebaseRegisterUserListener {
                 }
 
                 else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    val title = getString(R.string.invalid_email_error)
                     val message = getString(R.string.your_email_is_invalid_message)
-                    showDialog(title, message)
+                    binding.etEmailSignup.requestFocus()
+                    binding.etEmailSignup.error = message
                 }
 
                 else if (!isValidPassword(password)) {
-                    val title = getString(R.string.password_error)
                     val message = getString(R.string.password_pattern)
-                    showDialog(title, message)
+                    binding.etPasswordSignup.requestFocus()
+                    binding.etPasswordSignup.error = message
                 }
                 else if (!comparePassword(password, confirmPassword)) {
-                    val title = getString(R.string.password_error)
                     val message = getString(R.string.password_unfit)
-                    showDialog(title, message)
+                    binding.etConfirmPasswordSignup.requestFocus()
+                    binding.etPasswordSignup.error = message
+                    binding.etConfirmPasswordSignup.error = message
                 }
                 else {
                     val user = getUserFromField()
@@ -105,6 +106,8 @@ class SignupActivity : AppCompatActivity(), FirebaseRegisterUserListener {
     private fun isValidField(editText: EditText) : Boolean {
         if (editText.text.isEmpty()) {
             editText.requestFocus()
+            val message = getString(R.string.please_fill_all_the_field)
+            editText.error = message
             return false
         }
         return true

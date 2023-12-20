@@ -3,6 +3,7 @@ package com.example.notnotes.userservice
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.MainActivity
@@ -30,15 +31,20 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         }
 
         binding.btnLogin.setOnClickListener {
-            if (!isValidField(binding.etUsernameLogin)
+            if (!isValidField(binding.etEmailLogin)
                 || !isValidField(binding.etPasswordLogin)) {
                 val title = getString(R.string.empty_field_error)
                 val message = getString(R.string.please_fill_all_the_field)
                 showDialog(title, message)
             }
+            else if (!Patterns.EMAIL_ADDRESS.matcher(binding.etEmailLogin.text.toString()).matches()) {
+                val title = getString(R.string.invalid_email_error)
+                val message = getString(R.string.your_email_is_invalid_message)
+                showDialog(title, message)
+            }
             else {
                 val user = getUserFromField()
-                checkUserData(user)
+                database.loginUser(user)
             }
         }
 
@@ -49,10 +55,18 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         }
     }
 
+    private fun isValidField(editText: EditText) : Boolean {
+        if (editText.text.isEmpty()) {
+            editText.requestFocus()
+            return false
+        }
+        return true
+    }
+
     private fun getUserFromField() : User {
-        val username = binding.etUsernameLogin.text.toString()
+        val email = binding.etEmailLogin.text.toString()
         val password = binding.etPasswordLogin.text.toString()
-        return User(username, password)
+        return User(email, password)
     }
 
     private fun checkUserData(user: User) {
@@ -101,13 +115,6 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         startActivity(signupIntent)
     }
 
-    private fun isValidField(editText: EditText) : Boolean {
-        if (editText.text.isEmpty()) {
-            editText.requestFocus()
-            return false
-        }
-        return true
-    }
 
 //    override fun onUsernameExist(user: User) {
 //        val userField = getUserFromField()

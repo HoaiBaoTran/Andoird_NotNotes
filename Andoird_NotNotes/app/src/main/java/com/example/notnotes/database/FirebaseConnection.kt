@@ -134,6 +134,10 @@ class FirebaseConnection(
         firebaseAuth.registerUser(user)
     }
 
+    fun loginUser(user: User) {
+        firebaseAuth
+    }
+
 //    fun checkUsernameExist (userName: String) {
 //        firebaseAuth.firebaseRegisterUserListener = firebaseRegisterUserListener
 //        connectUserRef()

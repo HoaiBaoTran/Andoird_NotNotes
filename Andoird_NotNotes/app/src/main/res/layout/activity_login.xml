@@ -24,15 +24,15 @@
         app:layout_constraintVertical_bias="0.12" />
 
     <EditText
-        android:id="@+id/etUsernameLogin"
+        android:id="@+id/etEmailLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:drawableStart="@drawable/ic_username"
+        android:drawableStart="@drawable/ic_email"
         android:drawablePadding="16dp"
         android:ems="10"
-        android:hint="@string/enter_username"
+        android:hint="@string/enter_email"
         android:inputType="textEmailAddress"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,20 +56,20 @@
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUsernameLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/etEmailLogin" />
 
     <TextView
-        android:id="@+id/tvUsernameInfo"
+        android:id="@+id/tvEmailInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/username"
+        android:text="@string/email"
         android:textColor="@color/redtext"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/etUsernameLogin"
-        app:layout_constraintStart_toStartOf="@+id/etUsernameLogin" />
+        app:layout_constraintBottom_toTopOf="@+id/etEmailLogin"
+        app:layout_constraintStart_toStartOf="@+id/etEmailLogin" />
 
     <TextView
         android:id="@+id/tvNameEditProfile"
@@ -139,5 +139,15 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/etPasswordLogin"
         app:layout_constraintTop_toBottomOf="@+id/etPasswordLogin" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
