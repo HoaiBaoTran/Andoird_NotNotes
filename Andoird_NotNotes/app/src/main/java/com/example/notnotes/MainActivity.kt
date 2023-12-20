@@ -26,6 +26,7 @@ import com.example.notnotes.userservice.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
 import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.listener.FirebaseNoteListener
+import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FragmentListener
 import com.example.notnotes.listener.ItemClickListener
@@ -38,7 +39,7 @@ class MainActivity :
     AppCompatActivity(),
     FragmentListener,
     FirebaseReadUserListener,
-    ItemClickListener {
+    ItemClickListener, FirebaseReadNoteListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var noteAdapter: MyNoteAdapter
@@ -55,6 +56,7 @@ class MainActivity :
         binding.progressBar.visibility = View.VISIBLE
 
         database = FirebaseService(this, this)
+        database.firebaseReadNoteListener = this
 
         binding.fab.setOnClickListener {
             openNoteDetailFragment(null)
@@ -145,7 +147,7 @@ class MainActivity :
             )
             adapter = noteAdapter
         }
-//        database.getNotes()
+        database.getNotes()
     }
 
 
@@ -209,7 +211,6 @@ class MainActivity :
         runOnUiThread {
             showComponents()
         }
-
     }
 
 
@@ -263,6 +264,18 @@ class MainActivity :
 
     override fun onReadUserFailure() {
         binding.progressBar.visibility = View.GONE
+    }
+
+    // -- Read Note Listener --
+
+    override fun onReadNoteListComplete(notes: List<Note>) {
+        noteList.clear()
+        noteList.addAll(notes)
+        noteAdapter.notifyDataSetChanged()
+    }
+
+    override fun onReadNoteListFailure() {
+
     }
 
 }

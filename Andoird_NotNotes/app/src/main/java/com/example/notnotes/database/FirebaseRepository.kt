@@ -3,6 +3,7 @@ package com.example.notnotes.database
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.listener.FirebaseNoteListener
+import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
 import com.example.notnotes.model.Note
@@ -22,6 +23,7 @@ class FirebaseRepository(private val context: Context) {
     var firebaseReadUserListener: FirebaseReadUserListener? = null
     var firebaseUpdateUserListener: FirebaseUpdateUserListener? = null
     var firebaseNoteListener: FirebaseNoteListener? = null
+    var firebaseReadNoteListener: FirebaseReadNoteListener? = null
 
     private val USER_TABLE = "User"
     private val NOTE_TABLE = "Note"
@@ -50,6 +52,26 @@ class FirebaseRepository(private val context: Context) {
                     }
 
             }
+    }
+
+    fun getNotes(userId: String) {
+        connectNoteRef(userId)
+        val notes = ArrayList<Note>()
+        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (noteSnapshot in snapshot.children) {
+                    val note = noteSnapshot.getValue(Note::class.java)
+                    note?.id = noteSnapshot.key.toString()
+                    if (note != null) {
+                        notes.add(note)
+                    }
+                }
+                firebaseReadNoteListener!!.onReadNoteListComplete(notes)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                firebaseReadNoteListener!!.onReadNoteListFailure()
+            }
+        })
     }
 
     // -- User --

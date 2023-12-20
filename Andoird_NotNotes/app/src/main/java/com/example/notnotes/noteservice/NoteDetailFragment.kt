@@ -151,4 +151,5 @@ class NoteDetailFragment :
     override fun onAddNoteFailure() {
 
     }
+
 }

@@ -10,6 +10,7 @@ import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.listener.FirebaseLoginUserListener
 import com.example.notnotes.listener.FirebaseNoteListener
+import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
@@ -40,7 +41,11 @@ class FirebaseService(
     private lateinit var firebaseReadUserListener: FirebaseReadUserListener
     private lateinit var firebaseUpdateUserListener: FirebaseUpdateUserListener
     private lateinit var firebaseNoteListener: FirebaseNoteListener
-
+    var firebaseReadNoteListener: FirebaseReadNoteListener? = null
+        set(value) {
+            field = value
+            firebaseRepository.firebaseReadNoteListener = value
+        }
     private val db = Firebase.database
     private lateinit var reference: DatabaseReference
 
@@ -124,23 +129,9 @@ class FirebaseService(
             }
     }
 
-    fun getNotes(userName: String) {
-        connectNoteRef(userName)
-        val notes = ArrayList<Note>()
-        reference.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (noteSnapshot in snapshot.children) {
-                    val note = noteSnapshot.getValue(Note::class.java)
-                    if (note != null) {
-                        notes.add(note)
-                    }
-                }
-                firebaseListener.onReadNoteListComplete(notes)
-            }
-            override fun onCancelled(error: DatabaseError) {
-                firebaseListener.onFailure()
-            }
-        })
+    fun getNotes() {
+        val userId = auth.currentUser!!.uid
+        firebaseRepository.getNotes(userId)
     }
 
     // -- USER --
