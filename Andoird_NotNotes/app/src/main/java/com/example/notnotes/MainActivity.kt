@@ -241,8 +241,8 @@ class MainActivity :
     }
 
     override fun onDeleteItemClick(note: Note) {
-        val title = "Xóa note"
-        val message = "Bạn có chắc rằng mình muốn xóa note"
+        val title = getString(R.string.delete_note)
+        val message = getString(R.string.are_you_sure_want_to_delete_note)
         showDialogConfirm(title, message, note)
     }
 
@@ -251,11 +251,11 @@ class MainActivity :
         builder
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Xóa") { dialog, _ ->
+            .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
                 database.deleteNote(note, user.userName)
                 database.getNotes(user.userName)
             }
-            .setNegativeButton("Hủy bỏ") { dialog, _ ->
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
 

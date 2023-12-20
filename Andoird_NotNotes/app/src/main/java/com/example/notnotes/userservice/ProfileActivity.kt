@@ -14,7 +14,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private lateinit var user: User
 
-    private val NO_INFORMATION = "Không có thông tin"
+    private val NO_INFORMATION = getString(R.string.no_information)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

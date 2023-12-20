@@ -83,4 +83,9 @@
     <string name="add_note_success">Thêm note thành công</string>
     <string name="forgot_password">Quên mật khẩu ???</string>
     <string name="relax_and_try_to_remember_your_password">Hãy thư giản và cố nhớ lại mật khẩu của bạn nhé !!!</string>
+    <string name="no_information">Không có thông tin</string>
+    <string name="delete_note">Xóa note</string>
+    <string name="are_you_sure_want_to_delete_note">Bạn có chắc rằng mình muốn xóa note</string>
+    <string name="delete">Xóa</string>
+    <string name="cancel">Hủy bỏ</string>
 </resources>

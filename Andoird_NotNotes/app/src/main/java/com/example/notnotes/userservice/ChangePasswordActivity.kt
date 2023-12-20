@@ -32,21 +32,21 @@ class ChangePasswordActivity : AppCompatActivity(), FirebaseListener {
                 || !isValidField(binding.etNewPassword)
                 || !isValidField(binding.etConfirmNewPassword))
             {
-                val title = "Lỗi thông tin trống"
-                val message = "Xin vui lòng điền hết thông tin"
+                val title = getString(R.string.empty_field_error)
+                val message = getString(R.string.please_fill_all_the_field)
                 showDialog(title, message)
             }
             else {
                 val password = binding.etNewPassword.text.toString()
                 val confirmPassword = binding.etConfirmNewPassword.text.toString()
                 if (!validPassword(password)) {
-                    val title = "Lỗi mật khẩu"
-                    val message = "Mật khẩu ít nhất 8 ký tự và gồm 1 ký tự in hoa và 1 chữ số"
+                    val title = getString(R.string.password_error)
+                    val message = getString(R.string.password_pattern)
                     showDialog(title, message)
                 }
                 else if (!comparePassword(password, confirmPassword)) {
-                    val title = "Lỗi mật khẩu"
-                    val message = "Mật khẩu không khớp"
+                    val title = getString(R.string.password_error)
+                    val message = getString(R.string.password_unfit)
                     showDialog(title, message)
                 }
                 else {

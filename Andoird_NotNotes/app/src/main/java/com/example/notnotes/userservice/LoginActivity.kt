@@ -32,8 +32,8 @@ class LoginActivity : AppCompatActivity(), FirebaseListener {
         binding.btnLogin.setOnClickListener {
             if (!isValidField(binding.etUsernameLogin)
                 || !isValidField(binding.etPasswordLogin)) {
-                val title = "Lỗi thông tin trống"
-                val message = "Xin vui lòng điền hết thông tin"
+                val title = getString(R.string.empty_field_error)
+                val message = getString(R.string.please_fill_all_the_field)
                 showDialog(title, message)
             }
             else {
