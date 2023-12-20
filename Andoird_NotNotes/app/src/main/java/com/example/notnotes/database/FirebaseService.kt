@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
-import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.listener.FirebaseLoginUserListener
 import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadNoteListener
@@ -24,18 +23,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import java.util.Timer
 import kotlin.concurrent.schedule
 
 class FirebaseService(
     private val context: Context) {
-
-    private lateinit var firebaseListener: FirebaseListener
     private lateinit var firebaseRegisterUserListener: FirebaseRegisterUserListener
     private lateinit var firebaseLoginUserListener: FirebaseLoginUserListener
     private lateinit var firebaseReadUserListener: FirebaseReadUserListener
@@ -110,19 +104,10 @@ class FirebaseService(
         firebaseRepository.editNote(note, userId)
     }
 
-    fun deleteNote(note: Note, userName: String) {
-        connectNoteRef(userName)
-        reference.child(note.id).removeValue()
-            .addOnCompleteListener {
-                val title = context.applicationContext.getString(R.string.Annoucement)
-                val message = "Xóa note thành công"
-                showDialog(title, message)
-            }
-            .addOnFailureListener {
-                val title = context.applicationContext.getString(R.string.Annoucement)
-                val message = "Xóa note thất bại"
-                showDialog(title, message)
-            }
+    fun deleteNote(note: Note) {
+        val firebaseUser = auth.currentUser
+        val userId = firebaseUser!!.uid
+        firebaseRepository.deleteNote(note, userId)
     }
 
     fun getNotes() {

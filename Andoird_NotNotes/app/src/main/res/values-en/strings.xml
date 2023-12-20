@@ -103,4 +103,6 @@
     <string name="email_not_verified">Email Not Verified</string>
     <string name="please_verify_your_email">Please verify your email now. You can not login without email verification</string>
     <string name="update_note_success">Update note successfully</string>
+    <string name="delete_note_success">Delete note successfully</string>
+    <string name="delete_note_fail">Delete note fail</string>
 </resources>

@@ -70,6 +70,22 @@ class FirebaseRepository(private val context: Context) {
             }
     }
 
+    fun deleteNote(note: Note, userId: String) {
+        connectNoteRef(userId)
+        reference.child(note.id).removeValue()
+            .addOnCompleteListener {task ->
+                if (task.isSuccessful) {
+                    firebaseReadNoteListener!!.onDeleteNoteSuccess()
+                }
+                else {
+                    firebaseReadNoteListener!!.onDeleteNoteFailure()
+                }
+            }
+            .addOnFailureListener {
+                firebaseReadNoteListener!!.onDeleteNoteFailure()
+            }
+    }
+
     fun getNotes(userId: String) {
         connectNoteRef(userId)
         val notes = ArrayList<Note>()

@@ -24,8 +24,6 @@ import com.example.notnotes.userservice.ChangePasswordActivity
 import com.example.notnotes.userservice.LoginActivity
 import com.example.notnotes.userservice.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
-import com.example.notnotes.listener.FirebaseListener
-import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FragmentListener
@@ -233,8 +231,8 @@ class MainActivity :
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
-//                database.deleteNote(note, user.userName)
-//                database.getNotes(user.userName)
+                database.deleteNote(note)
+                database.getNotes()
             }
             .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
@@ -275,6 +273,31 @@ class MainActivity :
 
     override fun onReadNoteListFailure() {
 
+    }
+
+    override fun onDeleteNoteSuccess() {
+        val title = getString(R.string.Annoucement)
+        val message = getString(R.string.delete_note_success)
+        showDialog(title, message)
+    }
+
+    override fun onDeleteNoteFailure() {
+        val title = getString(R.string.Annoucement)
+        val message = getString(R.string.delete_note_fail)
+        showDialog(title, message)
+    }
+
+    private fun showDialog(title: String, message: String) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Ok") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
 }

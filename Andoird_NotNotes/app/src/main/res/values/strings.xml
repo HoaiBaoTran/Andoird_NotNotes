@@ -103,4 +103,6 @@
     <string name="email_not_verified">Thông báo xác nhận emai</string>
     <string name="please_verify_your_email">Email bạn chưa xác nhận. Bạn cần xác nhận email của bạn để đăng nhập</string>
     <string name="update_note_success">Cập nhật note thành công</string>
+    <string name="delete_note_success">Xóa note thành công</string>
+    <string name="delete_note_fail">Xóa note thất bại</string>
 </resources>

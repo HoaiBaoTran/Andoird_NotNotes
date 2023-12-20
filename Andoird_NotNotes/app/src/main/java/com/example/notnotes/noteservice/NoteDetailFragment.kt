@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.notnotes.MainActivity
 import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.FragmentNoteDetailBinding
-import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FragmentListener
 import com.example.notnotes.model.Note

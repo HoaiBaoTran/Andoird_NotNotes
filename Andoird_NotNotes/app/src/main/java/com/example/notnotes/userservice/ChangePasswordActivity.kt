@@ -11,10 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivityChangePasswordBinding
-import com.example.notnotes.listener.FirebaseListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
-import com.example.notnotes.model.Note
-import com.example.notnotes.model.User
 import java.util.Timer
 import java.util.regex.Pattern
 import kotlin.concurrent.schedule
