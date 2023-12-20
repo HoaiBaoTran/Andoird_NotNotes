@@ -3,6 +3,8 @@ package com.example.notnotes.userservice
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.util.Patterns
 import android.view.View
@@ -31,6 +33,18 @@ class LoginActivity : AppCompatActivity(), FirebaseLoginUserListener {
 
         binding.tvSignup.setOnClickListener {
             openSignupActivity()
+        }
+
+        binding.imgPassword.setOnClickListener {
+            if (binding.etPasswordLogin.transformationMethod
+                    .equals(HideReturnsTransformationMethod.getInstance())) {
+                binding.etPasswordLogin.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.imgPassword.setImageResource(R.drawable.hide)
+            }
+            else {
+                binding.etPasswordLogin.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.imgPassword.setImageResource(R.drawable.view)
+            }
         }
 
         binding.btnLogin.setOnClickListener {

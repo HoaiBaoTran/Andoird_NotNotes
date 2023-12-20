@@ -81,9 +81,15 @@
         app:layout_constraintStart_toStartOf="@+id/etEmailSignup" />
 
 
-
-
-   >
+    <ImageView
+        android:id="@+id/imgPassword"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/hide"
+        android:layout_marginEnd="8dp"
+        android:elevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/etPasswordSignup"
+        app:layout_constraintEnd_toEndOf="@id/etPasswordSignup"/>
 
     <EditText
         android:id="@+id/etPasswordSignup"
@@ -114,6 +120,16 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/etPasswordSignup"
         app:layout_constraintStart_toStartOf="@+id/etPasswordSignup" />
+
+    <ImageView
+        android:id="@+id/imgConfirmPassword"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/hide"
+        android:layout_marginEnd="8dp"
+        android:elevation="5dp"
+        app:layout_constraintTop_toTopOf="@id/etConfirmPasswordSignup"
+        app:layout_constraintEnd_toEndOf="@id/etConfirmPasswordSignup"/>
 
     <EditText
         android:id="@+id/etConfirmPasswordSignup"

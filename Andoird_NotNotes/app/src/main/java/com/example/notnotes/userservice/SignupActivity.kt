@@ -2,6 +2,8 @@ package com.example.notnotes.userservice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
 import android.view.MenuItem
 import android.view.View
@@ -28,6 +30,31 @@ class SignupActivity : AppCompatActivity(), FirebaseRegisterUserListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
         database = FirebaseConnection(this, this)
+
+        binding.imgPassword.setOnClickListener {
+            if (binding.etPasswordSignup.transformationMethod
+                    .equals(HideReturnsTransformationMethod.getInstance())) {
+                binding.etPasswordSignup.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.imgPassword.setImageResource(R.drawable.hide)
+            }
+            else {
+                binding.etPasswordSignup.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.imgPassword.setImageResource(R.drawable.view)
+            }
+        }
+
+        binding.imgConfirmPassword.setOnClickListener {
+            if (binding.etConfirmPasswordSignup.transformationMethod
+                    .equals(HideReturnsTransformationMethod.getInstance())) {
+                binding.etConfirmPasswordSignup.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.imgConfirmPassword.setImageResource(R.drawable.hide)
+            }
+            else {
+                binding.etConfirmPasswordSignup.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.imgConfirmPassword.setImageResource(R.drawable.view)
+            }
+        }
+
 
         binding.btnSignup.setOnClickListener {
             if (!isValidField(binding.etNameSignup)
