@@ -42,14 +42,10 @@ class FirebaseService(
             field = value
             firebaseRepository.firebaseReadNoteListener = value
         }
-    private val db = Firebase.database
-    private lateinit var reference: DatabaseReference
 
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firebaseRepository = FirebaseRepository(context)
 
-    private val USER_TABLE = "User"
-    private val NOTE_TABLE = "Note"
 
     constructor(context: Context, firebaseRegisterUserListener: FirebaseRegisterUserListener) : this(context) {
         this.firebaseRegisterUserListener = firebaseRegisterUserListener
@@ -90,14 +86,6 @@ class FirebaseService(
     }
 
 
-    private fun connectUserRef () {
-        reference = db.getReference(USER_TABLE)
-    }
-
-    private fun connectNoteRef (userId: String) {
-        reference = db.getReference(NOTE_TABLE).child(userId)
-    }
-
     // -- NOTE --
 
     fun addNote(note: Note) {
@@ -130,7 +118,20 @@ class FirebaseService(
                 firebaseResetPasswordListener.onResetPasswordSuccess()
             }
             else {
-                firebaseUpdateUserListener.onUpdateUserFailure()
+                try {
+                    throw task.exception!!
+                }
+                catch (e: FirebaseAuthInvalidUserException) {
+                    val message = context.getString(R.string.user_not_exist_or_wrong_password)
+                    val title = context.getString(R.string.user_account_error)
+                    showDialog(title, message)
+                    firebaseUpdateUserListener.onUpdateUserFailure()
+                }
+                catch (e: Exception) {
+                    Log.e("FirebaseService", e.message!!)
+                    firebaseUpdateUserListener.onUpdateUserFailure()
+                }
+
             }
         }
     }
@@ -235,7 +236,7 @@ class FirebaseService(
                     firebaseLoginUserListener.onFailure()
                 }
                 catch (e: Exception) {
-                    Log.e("FirebaseAuthentication", e.message!!)
+                    Log.e("FirebaseService", e.message!!)
                     firebaseLoginUserListener.onFailure()
                 }
             }
