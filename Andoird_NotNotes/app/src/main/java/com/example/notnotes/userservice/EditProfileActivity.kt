@@ -1,5 +1,7 @@
 package com.example.notnotes.userservice
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -12,7 +14,9 @@ import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivityEditProfileBinding
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
+import com.example.notnotes.listener.FirebaseUploadImageListener
 import com.example.notnotes.model.User
+import com.squareup.picasso.Picasso
 import java.util.Timer
 import kotlin.concurrent.schedule
 
@@ -40,6 +44,10 @@ class EditProfileActivity :
             database.getUserFromFirebaseUser(firebaseUser)
         }
 
+        binding.btnImageProfile.setOnClickListener {
+            openUploadImageProfileActivity()
+        }
+
         binding.btnSave.setOnClickListener {
             if (!isValidField(binding.etName))
             {
@@ -55,6 +63,11 @@ class EditProfileActivity :
 
 
         }
+    }
+
+    private fun openUploadImageProfileActivity() {
+        val uploadImageProfileIntent = Intent(this, UploadImageProfileActivity::class.java)
+        startActivity(uploadImageProfileIntent)
     }
 
     private fun showDialog(title: String, message: String) {
@@ -141,7 +154,17 @@ class EditProfileActivity :
         else {
             binding.etJob.setText("")
         }
+        loadUserImage()
 
+    }
+
+    private fun loadUserImage() {
+        val uri: Uri = database.auth.currentUser!!.photoUrl!!
+
+        Picasso.with(this).load(uri)
+            .fit()
+            .centerCrop()
+            .into(binding.imgProfile)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -164,6 +187,7 @@ class EditProfileActivity :
         return super.onOptionsItemSelected(item)
     }
 
+    // -- Read User Listener --
 
     override fun onReadUserSuccess(user: User) {
         this.user = user
@@ -174,6 +198,8 @@ class EditProfileActivity :
     override fun onReadUserFailure() {
         binding.progressBar.visibility = View.GONE
     }
+
+    // -- Update User Listener --
 
     override fun onUpdateUserSuccess() {
         val title = getString(R.string.Annoucement)
@@ -188,6 +214,8 @@ class EditProfileActivity :
     override fun onUpdateUserFailure() {
         binding.progressBar.visibility = View.GONE
     }
+
+
 
 
 }

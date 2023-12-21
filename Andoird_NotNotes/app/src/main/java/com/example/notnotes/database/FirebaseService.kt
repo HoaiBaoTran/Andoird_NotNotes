@@ -1,9 +1,11 @@
 package com.example.notnotes.database
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import android.webkit.MimeTypeMap
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
@@ -14,20 +16,18 @@ import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseResetPasswordListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
+import com.example.notnotes.listener.FirebaseUploadImageListener
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
-import com.example.notnotes.userservice.LoginActivity
-import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
-import java.util.Timer
-import kotlin.concurrent.schedule
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 
 class FirebaseService(
     private val context: Context) {
@@ -37,6 +37,7 @@ class FirebaseService(
     private lateinit var firebaseUpdateUserListener: FirebaseUpdateUserListener
     private lateinit var firebaseNoteListener: FirebaseNoteListener
     private lateinit var firebaseResetPasswordListener: FirebaseResetPasswordListener
+    private lateinit var firebaseUploadImageListener: FirebaseUploadImageListener
     var firebaseReadNoteListener: FirebaseReadNoteListener? = null
         set(value) {
             field = value
@@ -44,6 +45,7 @@ class FirebaseService(
         }
 
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val storageRef= FirebaseStorage.getInstance().getReference("DisplayPics")
     private val firebaseRepository = FirebaseRepository(context)
 
 
@@ -85,6 +87,10 @@ class FirebaseService(
 
     }
 
+    constructor(context: Context, firebaseUploadImageListener: FirebaseUploadImageListener) : this(context) {
+        this.firebaseUploadImageListener = firebaseUploadImageListener
+    }
+
 
     // -- NOTE --
 
@@ -112,6 +118,38 @@ class FirebaseService(
     }
 
     // -- USER --
+    fun changeProfilePic(uriImage: Uri) {
+        val firebaseUser = auth.currentUser!!
+        val fileReference = storageRef.child(firebaseUser.uid
+                + "." + getFileExtension(uriImage))
+//        val uri = firebaseUser.photoUrl
+//        Picasso.with(context).load(uri).into(imgView)
+
+        fileReference.putFile(uriImage)
+            .addOnSuccessListener {
+            fileReference.downloadUrl.addOnSuccessListener { uri ->
+                val downloadUri: Uri = uri
+
+                val userProfileChangeRequest: UserProfileChangeRequest = UserProfileChangeRequest.Builder()
+                    .setPhotoUri(downloadUri).build()
+
+                firebaseUser.updateProfile(userProfileChangeRequest)
+                firebaseUploadImageListener.onUploadImageSuccess()
+            }
+        }
+            .addOnFailureListener {
+                Log.d("FirebaseService", it.message.toString())
+                firebaseUploadImageListener.onUploadImageFailure()
+            }
+    }
+
+    private fun getFileExtension(uriImage: Uri): String {
+        val contentResolver = context.applicationContext.contentResolver
+        val mime: MimeTypeMap = MimeTypeMap.getSingleton()
+        val type = mime.getExtensionFromMimeType(contentResolver.getType(uriImage))
+        return type!!
+    }
+
     fun resetPassword(email: String) {
         auth.sendPasswordResetEmail(email).addOnCompleteListener {task ->
             if (task.isSuccessful) {

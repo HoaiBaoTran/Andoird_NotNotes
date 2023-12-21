@@ -1,6 +1,7 @@
 package com.example.notnotes.userservice
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -12,6 +13,7 @@ import com.example.notnotes.databinding.ActivityProfileBinding
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.model.User
 import com.google.firebase.auth.FirebaseUser
+import com.squareup.picasso.Picasso
 
 class ProfileActivity :
     AppCompatActivity(),
@@ -40,9 +42,18 @@ class ProfileActivity :
 
         binding.progressBar.visibility = View.VISIBLE
 
+        binding.btnImgProfile.setOnClickListener {
+            openUploadImageProfileActivity()
+        }
+
         binding.btnImage.setOnClickListener {
             openEditProfileActivity()
         }
+    }
+
+    private fun openUploadImageProfileActivity() {
+        val uploadImageProfileIntent = Intent(this, UploadImageProfileActivity::class.java)
+        startActivity(uploadImageProfileIntent)
     }
 
     private fun checkIfEmailVerified(firebaseUser: FirebaseUser) {
@@ -102,6 +113,17 @@ class ProfileActivity :
         else {
             user.homepage
         }
+
+        loadUserImage()
+    }
+
+    private fun loadUserImage() {
+        val uri: Uri = database.auth.currentUser!!.photoUrl!!
+
+        Picasso.with(this).load(uri)
+            .fit()
+            .centerCrop()
+            .into(binding.imgProfile)
     }
 
     private fun openEditProfileActivity () {
