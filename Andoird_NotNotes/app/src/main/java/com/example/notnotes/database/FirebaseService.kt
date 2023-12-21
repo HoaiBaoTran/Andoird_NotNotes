@@ -12,6 +12,7 @@ import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.listener.FirebaseReadUserListener
+import com.example.notnotes.listener.FirebaseResetPasswordListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
@@ -35,6 +36,7 @@ class FirebaseService(
     private lateinit var firebaseReadUserListener: FirebaseReadUserListener
     private lateinit var firebaseUpdateUserListener: FirebaseUpdateUserListener
     private lateinit var firebaseNoteListener: FirebaseNoteListener
+    private lateinit var firebaseResetPasswordListener: FirebaseResetPasswordListener
     var firebaseReadNoteListener: FirebaseReadNoteListener? = null
         set(value) {
             field = value
@@ -81,6 +83,12 @@ class FirebaseService(
         firebaseRepository.firebaseNoteListener = firebaseNoteListener
     }
 
+    constructor(context: Context, firebaseResetPasswordListener: FirebaseResetPasswordListener)
+            : this(context) {
+        this.firebaseResetPasswordListener = firebaseResetPasswordListener
+
+    }
+
 
     private fun connectUserRef () {
         reference = db.getReference(USER_TABLE)
@@ -116,6 +124,16 @@ class FirebaseService(
     }
 
     // -- USER --
+    fun resetPassword(email: String) {
+        auth.sendPasswordResetEmail(email).addOnCompleteListener {task ->
+            if (task.isSuccessful) {
+                firebaseResetPasswordListener.onResetPasswordSuccess()
+            }
+            else {
+                firebaseUpdateUserListener.onUpdateUserFailure()
+            }
+        }
+    }
 
     fun changePasswordUser(oldPassword: String, newPassword: String) {
         val firebaseUser = auth.currentUser
@@ -156,19 +174,7 @@ class FirebaseService(
                 val id = firebaseUser?.uid
 
                 firebaseRepository.writeUserData(user, id)
-
-                firebaseRegisterUserListener!!.onRegisterUserSuccess()
-
-                val title = context.applicationContext.getString(R.string.Annoucement)
-                val message = context.applicationContext.getString(R.string.signup_success_message)
-                showDialog(title, message)
-
-                Timer().schedule(3000) {
-                    val intent = Intent(context, LoginActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intent)
-                    (context as Activity).finish()
-                }
+                firebaseRegisterUserListener.onRegisterUserSuccess()
 
             } else {
                 try {

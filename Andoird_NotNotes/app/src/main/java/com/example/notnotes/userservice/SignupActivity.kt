@@ -1,5 +1,6 @@
 package com.example.notnotes.userservice
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
@@ -14,7 +15,9 @@ import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivitySignupBinding
 import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.model.User
+import java.util.Timer
 import java.util.regex.Pattern
+import kotlin.concurrent.schedule
 
 class SignupActivity : AppCompatActivity(), FirebaseRegisterUserListener {
 
@@ -166,5 +169,15 @@ class SignupActivity : AppCompatActivity(), FirebaseRegisterUserListener {
 
     override fun onRegisterUserSuccess() {
         binding.progressBar.visibility = View.GONE
+        val title = getString(R.string.Annoucement)
+        val message = getString(R.string.signup_success_message)
+        showDialog(title, message)
+
+        Timer().schedule(3000) {
+            val intent = Intent(this@SignupActivity, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish()
+        }
     }
 }
