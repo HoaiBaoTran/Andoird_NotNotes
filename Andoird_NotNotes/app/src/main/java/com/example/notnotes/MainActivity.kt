@@ -32,6 +32,7 @@ import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.example.notnotes.noteservice.MyNoteAdapter
 import com.example.notnotes.noteservice.NoteDetailFragment
+import com.google.firebase.auth.FirebaseUser
 
 class MainActivity :
     AppCompatActivity(),
@@ -56,6 +57,7 @@ class MainActivity :
         database = FirebaseService(this, this)
         database.firebaseReadNoteListener = this
 
+
         binding.fab.setOnClickListener {
             openNoteDetailFragment(null)
         }
@@ -67,8 +69,15 @@ class MainActivity :
         val firebaseUser = database.auth.currentUser
         if (firebaseUser != null) {
             database.getUserFromFirebaseUser(firebaseUser)
+            checkIfEmailVerified(firebaseUser)
         }
 
+    }
+
+    private fun checkIfEmailVerified(firebaseUser: FirebaseUser) {
+        if (!firebaseUser.isEmailVerified) {
+            showAlertDialog()
+        }
     }
 
     private fun openNoteDetailFragment(bundle: Bundle?) {
@@ -240,6 +249,24 @@ class MainActivity :
 
         val dialog: AlertDialog = builder.create()
         dialog.show()
+    }
+
+    private fun showAlertDialog() {
+        val alertDialog = android.app.AlertDialog.Builder(this)
+        val title = getString(R.string.email_not_verified)
+        val message = getString(R.string.please_verify_your_email)
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
+
+        alertDialog.setPositiveButton("Continue") { dialog, _ ->
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_APP_EMAIL)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
+        alertDialog.create()
+        alertDialog.show()
     }
 
     companion object {

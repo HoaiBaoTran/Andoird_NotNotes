@@ -11,6 +11,7 @@ import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.ActivityProfileBinding
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.model.User
+import com.google.firebase.auth.FirebaseUser
 
 class ProfileActivity :
     AppCompatActivity(),
@@ -34,6 +35,7 @@ class ProfileActivity :
         val firebaseUser = database.auth.currentUser
         if (firebaseUser != null) {
             database.getUserFromFirebaseUser(firebaseUser)
+            checkIfEmailVerified(firebaseUser)
         }
 
         binding.progressBar.visibility = View.VISIBLE
@@ -41,6 +43,30 @@ class ProfileActivity :
         binding.btnImage.setOnClickListener {
             openEditProfileActivity()
         }
+    }
+
+    private fun checkIfEmailVerified(firebaseUser: FirebaseUser) {
+        if (!firebaseUser.isEmailVerified) {
+            showAlertDialog()
+        }
+    }
+
+    private fun showAlertDialog() {
+        val alertDialog = android.app.AlertDialog.Builder(this)
+        val title = getString(R.string.email_not_verified)
+        val message = getString(R.string.please_verify_your_email)
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
+
+        alertDialog.setPositiveButton("Continue") { dialog, _ ->
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_APP_EMAIL)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
+        alertDialog.create()
+        alertDialog.show()
     }
 
     private fun loadUserInfo() {

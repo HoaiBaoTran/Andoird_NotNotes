@@ -137,16 +137,6 @@ class FirebaseService(
                         }
                     }
             }
-//        connectUserRef()
-//        reference.child(user.userName).setValue(user)
-//            .addOnCompleteListener {
-//                val title = context.applicationContext.getString(R.string.Annoucement)
-//                val message = context.applicationContext.getString(R.string.change_password_success)
-//                showDialog(title, message)
-//                Timer().schedule(3000) {
-//                    (context as Activity).finish()
-//                }
-//            }
     }
 
     fun updateUser(user: User) {
