@@ -159,12 +159,15 @@ class EditProfileActivity :
     }
 
     private fun loadUserImage() {
-        val uri: Uri = database.auth.currentUser!!.photoUrl!!
+        val uri: Uri? = database.auth.currentUser?.photoUrl
 
-        Picasso.with(this).load(uri)
-            .fit()
-            .centerCrop()
-            .into(binding.imgProfile)
+        if (uri != null) {
+            Picasso.with(this).load(uri)
+                .fit()
+                .centerCrop()
+                .into(binding.imgProfile)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
