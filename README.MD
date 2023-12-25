@@ -8,3 +8,5 @@ https://drive.google.com/drive/u/2/folders/1ZqHcb-n2WKvLh7UOj9_GMIHPISt9yXgP
 
 Link Github:
 https://github.com/HoaiBaoTran/Andoird_NotNotes.git
+
+Link Project đầy đủ hơn trên github
