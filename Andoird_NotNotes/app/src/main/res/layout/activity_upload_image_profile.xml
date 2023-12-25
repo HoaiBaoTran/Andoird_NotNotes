@@ -33,13 +33,24 @@
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
             android:layout_marginTop="24dp"/>
+
+        <Button
+            android:id="@+id/btnCapturePic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnChoosePic"
+            android:textColor="@color/white"
+            android:text="@string/take_photo"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="8dp"/>
         
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="450dp"
             android:id="@+id/imgProfile"
             android:layout_marginTop="24dp"
-            android:layout_below="@id/btnChoosePic"
+            android:layout_below="@id/btnCapturePic"
             android:src="@drawable/hide"/>
 
         <Button

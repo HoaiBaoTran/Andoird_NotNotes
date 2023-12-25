@@ -114,4 +114,10 @@
     <string name="choose_picture">Chọn hình ảnh</string>
     <string name="upload_picture">Đăng tải ảnh</string>
     <string name="upload_picture_success">Đăng tải ảnh thành công</string>
+    <string name="take_photo">Chụp hình</string>
+    <string name="camera_permission_title">Quyền sử dụng camera</string>
+    <string name="camera_permission_message">Để chụp hình cần sử dụng camera, bạn có cho phép không ?</string>
+    <string name="ok">Ok</string>
+    <string name="denied">Từ chối</string>
+    <string name="camera_permission_denied">Quyền sử dụng camera bị từ chối</string>
 </resources>

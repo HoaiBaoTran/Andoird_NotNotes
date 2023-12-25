@@ -114,5 +114,11 @@
     <string name="upload_picture_success">Upload picture successfully</string>
     <string name="choose_picture">Choose picture</string>
     <string name="upload_picture">Upload picture</string>
+    <string name="take_photo">Take photo</string>
+    <string name="camera_permission_title">Camera Permission</string>
+    <string name="camera_permission_message">Need camera permission to use camera</string>
+    <string name="ok">Ok</string>
+    <string name="denied">Deny</string>
+    <string name="camera_permission_denied">Camera permission denied</string>
 
 </resources>

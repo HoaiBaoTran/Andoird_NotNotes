@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
@@ -27,7 +26,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
 
 class FirebaseService(
     private val context: Context) {
@@ -143,11 +141,10 @@ class FirebaseService(
             }
     }
 
-    private fun getFileExtension(uriImage: Uri): String {
+    private fun getFileExtension(uriImage: Uri): String? {
         val contentResolver = context.applicationContext.contentResolver
         val mime: MimeTypeMap = MimeTypeMap.getSingleton()
-        val type = mime.getExtensionFromMimeType(contentResolver.getType(uriImage))
-        return type!!
+        return mime.getExtensionFromMimeType(contentResolver.getType(uriImage))
     }
 
     fun resetPassword(email: String) {
@@ -169,7 +166,6 @@ class FirebaseService(
                     Log.e("FirebaseService", e.message!!)
                     firebaseUpdateUserListener.onUpdateUserFailure()
                 }
-
             }
         }
     }
