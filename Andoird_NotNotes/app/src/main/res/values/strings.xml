@@ -120,4 +120,15 @@
     <string name="ok">Ok</string>
     <string name="denied">Từ chối</string>
     <string name="camera_permission_denied">Quyền sử dụng camera bị từ chối</string>
+
+    <string name="nav_all_notes">Ghi chú</string>
+    <string name="nav_storage">Lưu trữ</string>
+    <string name="nav_labels">Nhãn</string>
+    <string name="nav_recycle_bin">Thùng rác</string>
+    <string name="nav_setting">Cài đặt</string>
+    <string name="nav_profile">Thông tin cá nhân</string>
+    <string name="nav_change_pass">Đổi mật khẩu</string>
+    <string name="nav_logout">Đăng xuất</string>
+    <string name="nav_drawer_open">Mở nav</string>
+    <string name="nav_drawer_close">Đóng nav</string>
 </resources>

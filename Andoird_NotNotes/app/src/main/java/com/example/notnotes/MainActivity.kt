@@ -11,6 +11,7 @@ import android.text.style.StyleSpan
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -52,7 +53,19 @@ class MainActivity :
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        setSupportActionBar(binding.toolBar)
+
+        val toggle: ActionBarDrawerToggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.toolBar,
+            R.string.nav_drawer_open,
+            R.string.nav_drawer_close)
+        toggle.drawerArrowDrawable.color = resources.getColor(R.color.white)
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        // supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         binding.progressBar.visibility = View.VISIBLE
 
@@ -102,39 +115,36 @@ class MainActivity :
 
 
     private fun hideComponents () {
-        binding.tvUsername.visibility = View.GONE
         binding.recyclerview.visibility = View.GONE
         binding.fab.visibility = View.GONE
         binding.fragmentContainer.visibility = View.VISIBLE
     }
      private fun showComponents () {
-        binding.tvUsername.visibility = View.VISIBLE
         binding.recyclerview.visibility = View.VISIBLE
         binding.fab.visibility = View.VISIBLE
         binding.fragmentContainer.visibility = View.GONE
     }
 
     private fun initViews() {
-        initHelloTextView()
         initRecyclerView()
     }
 
-    private fun initHelloTextView() {
-        val userName = user.fullName
-        val formattedString = getString(R.string.formatted_string, userName)
-
-        val spannableString = SpannableString(formattedString)
-
-        val start = formattedString.indexOf(userName)
-        val end = start + userName.length
-        val styleSpan = StyleSpan(Typeface.BOLD)
-        spannableString.setSpan(styleSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        val colorSpan = ForegroundColorSpan(resources.getColor(R.color.pink))
-        spannableString.setSpan(colorSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        binding.tvUsername.text = spannableString
-    }
+//    private fun initHelloTextView() {
+//        val userName = user.fullName
+//        val formattedString = getString(R.string.formatted_string, userName)
+//
+//        val spannableString = SpannableString(formattedString)
+//
+//        val start = formattedString.indexOf(userName)
+//        val end = start + userName.length
+//        val styleSpan = StyleSpan(Typeface.BOLD)
+//        spannableString.setSpan(styleSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//
+//        val colorSpan = ForegroundColorSpan(resources.getColor(R.color.pink))
+//        spannableString.setSpan(colorSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//
+//        binding.tvUsername.text = spannableString
+//    }
 
     private fun initRecyclerView() {
         noteList = ArrayList()
@@ -159,22 +169,22 @@ class MainActivity :
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        super.onCreateOptionsMenu(menu)
-        menuInflater.inflate(R.menu.main_option_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_item_profile -> openProfileActivity()
-            R.id.menu_item_logout -> logoutAccount()
-            R.id.menu_item_change_password -> openChangePasswordActivity()
-            R.id.menu_item_settings -> openSettingActivity()
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        super.onCreateOptionsMenu(menu)
+//        menuInflater.inflate(R.menu.main_option_menu, menu)
+//        return true
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.menu_item_profile -> openProfileActivity()
+//            R.id.menu_item_logout -> logoutAccount()
+//            R.id.menu_item_change_password -> openChangePasswordActivity()
+//            R.id.menu_item_settings -> openSettingActivity()
+//        }
+//
+//        return super.onOptionsItemSelected(item)
+//    }
 
     private fun openSettingActivity() {
         val settingIntent = Intent(this, SettingActivity::class.java)
