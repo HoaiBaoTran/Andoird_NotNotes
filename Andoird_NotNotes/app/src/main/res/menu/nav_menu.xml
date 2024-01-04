@@ -22,7 +22,7 @@
             android:title="@string/nav_setting"
             android:icon="@drawable/ic_settings"/>
 
-        <item android:title="@+id/nav_account">
+        <item android:title="@string/nav_account">
             <menu>
                 <item
                     android:id="@+id/nav_profile"

@@ -131,4 +131,5 @@
     <string name="nav_logout">Đăng xuất</string>
     <string name="nav_drawer_open">Mở nav</string>
     <string name="nav_drawer_close">Đóng nav</string>
+    <string name="nav_account">Tài khoản</string>
 </resources>
