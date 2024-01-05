@@ -67,12 +67,13 @@ class FirebaseService(
 
     constructor(context: Context,
                 firebaseReadUserListener: FirebaseReadUserListener,
-                firebaseUpdateUserListener: FirebaseUpdateUserListener) : this (context) {
-        this.firebaseReadUserListener = firebaseReadUserListener
-        this.firebaseUpdateUserListener = firebaseUpdateUserListener
-        firebaseRepository.firebaseReadUserListener = firebaseReadUserListener
-        firebaseRepository.firebaseUpdateUserListener = firebaseUpdateUserListener
-                }
+                firebaseUpdateUserListener: FirebaseUpdateUserListener) :
+            this (context) {
+                this.firebaseReadUserListener = firebaseReadUserListener
+                this.firebaseUpdateUserListener = firebaseUpdateUserListener
+                firebaseRepository.firebaseReadUserListener = firebaseReadUserListener
+                firebaseRepository.firebaseUpdateUserListener = firebaseUpdateUserListener
+            }
 
     constructor(context: Context, firebaseNoteListener: FirebaseNoteListener) : this(context) {
         this.firebaseNoteListener = firebaseNoteListener
@@ -89,6 +90,18 @@ class FirebaseService(
         this.firebaseUploadImageListener = firebaseUploadImageListener
     }
 
+    constructor(
+        context: Context,
+        fireNoteListener: FirebaseNoteListener,
+        fireReadNoteListener: FirebaseReadNoteListener,
+        readUserListener: FirebaseReadUserListener) : this (context) {
+        this.firebaseNoteListener = fireNoteListener
+        this.firebaseReadNoteListener = fireReadNoteListener
+        this.firebaseReadUserListener = readUserListener
+        firebaseRepository.firebaseNoteListener = fireNoteListener
+        firebaseRepository.firebaseReadNoteListener = fireReadNoteListener
+        firebaseRepository.firebaseReadUserListener = readUserListener
+    }
 
     // -- NOTE --
 

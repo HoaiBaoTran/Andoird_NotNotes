@@ -109,7 +109,10 @@ class FirebaseRepository(private val context: Context) {
                 for (noteSnapshot in snapshot.children) {
                     val note = noteSnapshot.getValue(Note::class.java)
                     note?.id = noteSnapshot.key.toString()
+                    note?.deleted = note?.let { noteSnapshot.child("deleted").getValue(Boolean::class.java) } == true
                     if (note != null) {
+                        Log.d("FirebaseRepository", note.deleted.toString())
+                        Log.d("FirebaseRepository", note.toString())
                         notes.add(note)
                     }
                 }
@@ -148,10 +151,10 @@ class FirebaseRepository(private val context: Context) {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val user = snapshot.getValue(User::class.java)
-                    firebaseReadUserListener!!.onReadUserSuccess(user!!)
+                    firebaseReadUserListener?.onReadUserSuccess(user!!)
                 }
                 else {
-                    firebaseReadUserListener!!.onReadUserFailure()
+                    firebaseReadUserListener?.onReadUserFailure()
                 }
             }
 

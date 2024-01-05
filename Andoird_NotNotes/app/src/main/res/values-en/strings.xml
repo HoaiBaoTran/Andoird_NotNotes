@@ -154,4 +154,10 @@
     <string name="example_date">18/01/2024</string>
     <string name="example_time">23:59</string>
     <string name="template_percent">%.2f%%</string>
+    <string name="are_you_sure_want_move_note_to_trash_bin">Are you sure want to move note to trash bin</string>
+    <string name="move_to_trash">Move to trash</string>
+    <string name="restore_note">Restore Note</string>
+    <string name="are_you_sure_want_to_restore_note">Are you sure want to restore note</string>
+    <string name="move_note_to_trash_success">Move note to trash bin successfully</string>
+    <string name="restore">Restore</string>
 </resources>

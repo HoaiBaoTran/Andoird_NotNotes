@@ -2,6 +2,7 @@ package com.example.notnotes.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.firebase.database.PropertyName
 
 class Note() : Parcelable {
     var id: String = ""
@@ -9,6 +10,7 @@ class Note() : Parcelable {
     var content: String? = ""
     var progress: String? = ""
     var label: String? = ""
+    var deleted: Boolean = false
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString().toString()
@@ -19,7 +21,7 @@ class Note() : Parcelable {
     }
 
     override fun toString(): String {
-        return "Note[$id - $title - $progress - $label]"
+        return "Note[$id - $title - $progress - $label - $deleted]"
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

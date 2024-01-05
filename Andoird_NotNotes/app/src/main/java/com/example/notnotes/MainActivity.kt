@@ -1,7 +1,6 @@
 package com.example.notnotes
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -9,7 +8,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -17,7 +15,6 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -29,6 +26,7 @@ import com.example.notnotes.userservice.ChangePasswordActivity
 import com.example.notnotes.userservice.LoginActivity
 import com.example.notnotes.userservice.ProfileActivity
 import com.example.notnotes.databinding.ActivityMainBinding
+import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FragmentListener
@@ -37,6 +35,7 @@ import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.example.notnotes.noteservice.MyNoteAdapter
 import com.example.notnotes.noteservice.NoteDetailFragment
+import com.example.notnotes.noteservice.TrashActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 import com.squareup.picasso.Picasso
@@ -47,6 +46,7 @@ class MainActivity :
     FirebaseReadUserListener,
     ItemClickListener,
     FirebaseReadNoteListener,
+    FirebaseNoteListener,
     NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -74,12 +74,14 @@ class MainActivity :
 
         binding.navigationView.setNavigationItemSelectedListener(this)
 
-        // supportActionBar?.setDisplayHomeAsUpEnabled(false)
-
         binding.progressBar.visibility = View.VISIBLE
 
-        database = FirebaseService(this, this)
-        database.firebaseReadNoteListener = this
+        database = FirebaseService(
+            this,
+            this,
+            this,
+            this
+        )
         getUserFromDatabase()
 
         binding.fab.setOnClickListener {
@@ -194,49 +196,6 @@ class MainActivity :
     }
 
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        super.onCreateOptionsMenu(menu)
-//        menuInflater.inflate(R.menu.main_option_menu, menu)
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.menu_item_profile -> openProfileActivity()
-//            R.id.menu_item_logout -> logoutAccount()
-//            R.id.menu_item_change_password -> openChangePasswordActivity()
-//            R.id.menu_item_settings -> openSettingActivity()
-//        }
-//
-//        return super.onOptionsItemSelected(item)
-//    }
-
-    private fun openSettingActivity() {
-        val settingIntent = Intent(this, SettingActivity::class.java)
-        startActivity(settingIntent)
-    }
-
-    private fun logoutAccount() {
-        deleteSharedPreferences("MyPreferences")
-        openLoginActivity()
-    }
-
-    private fun openChangePasswordActivity() {
-        val changePasswordIntent = Intent(this, ChangePasswordActivity::class.java)
-        startActivity(changePasswordIntent)
-    }
-
-    private fun openLoginActivity() {
-        val loginIntent = Intent(this, LoginActivity::class.java)
-        startActivity(loginIntent)
-        finish()
-    }
-
-    private fun openProfileActivity() {
-        val profileIntent = Intent(this, ProfileActivity::class.java)
-        startActivity(profileIntent)
-    }
-
     // -- Fragment Listener --
 
     override fun onFragmentClosed() {
@@ -254,8 +213,12 @@ class MainActivity :
 
     override fun onDeleteItemClick(note: Note) {
         val title = getString(R.string.delete_note)
-        val message = getString(R.string.are_you_sure_want_to_delete_note)
+        val message = getString(R.string.are_you_sure_want_move_note_to_trash_bin)
         showDialogConfirm(title, message, note)
+    }
+
+    override fun onRestoreItemClick(note: Note) {
+
     }
 
     private fun showDialogConfirm(title: String, message: String, note: Note) {
@@ -263,9 +226,9 @@ class MainActivity :
         builder
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
-                database.deleteNote(note)
-                database.getNotes()
+            .setPositiveButton(getString(R.string.move_to_trash)) { dialog, _ ->
+                note.deleted = true
+                database.editNote(note)
             }
             .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
@@ -379,7 +342,7 @@ class MainActivity :
 
             }
             R.id.nav_recycle_bin -> {
-
+                openTrashActivity()
             }
             R.id.nav_profile -> {
                 openProfileActivity()
@@ -398,9 +361,59 @@ class MainActivity :
         return true
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainer, fragment)
-        transaction.commit()
+    private fun openTrashActivity() {
+        val trashIntent = Intent(this, TrashActivity::class.java)
+        startActivity(trashIntent)
     }
+
+    private fun openSettingActivity() {
+        val settingIntent = Intent(this, SettingActivity::class.java)
+        startActivity(settingIntent)
+    }
+
+    private fun logoutAccount() {
+        deleteSharedPreferences("MyPreferences")
+        openLoginActivity()
+    }
+
+    private fun openChangePasswordActivity() {
+        val changePasswordIntent = Intent(this, ChangePasswordActivity::class.java)
+        startActivity(changePasswordIntent)
+    }
+
+    private fun openLoginActivity() {
+        val loginIntent = Intent(this, LoginActivity::class.java)
+        startActivity(loginIntent)
+        finish()
+    }
+
+    private fun openProfileActivity() {
+        val profileIntent = Intent(this, ProfileActivity::class.java)
+        startActivity(profileIntent)
+    }
+
+    override fun onAddNoteSuccess() {
+
+    }
+
+    override fun onAddNoteFailure() {
+
+    }
+
+    override fun onUpdateNoteSuccess() {
+        val title = getString(R.string.Annoucement)
+        val message = getString(R.string.move_note_to_trash_success)
+        showDialog(title, message)
+        database.getNotes()
+    }
+
+    override fun onUpdateNoteFailure() {
+
+    }
+
+//    private fun replaceFragment(fragment: Fragment) {
+//        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+//        transaction.replace(R.id.fragmentContainer, fragment)
+//        transaction.commit()
+//    }
 }
