@@ -29,13 +29,28 @@ class FirebaseRepository(private val context: Context) {
 
     private val USER_TABLE = "User"
     private val NOTE_TABLE = "Note"
+    private val LABEL_TABLE = "Label"
+    private val STORAGE_TABLE = "Storage"
+    private val TRASH_TABLE = "Trash"
 
     private fun connectUserRef () {
         reference = db.getReference(USER_TABLE)
     }
 
-    private fun connectNoteRef (userId: String) {
+    private fun connectNoteRef(userId: String) {
         reference = db.getReference(NOTE_TABLE).child(userId)
+    }
+
+    private fun connectLabelRef() {
+        reference = db.getReference(LABEL_TABLE)
+    }
+
+    private fun connectStorageRef() {
+        reference = db.getReference(STORAGE_TABLE)
+    }
+
+    private fun connectTrashRef() {
+        reference = db.getReference(TRASH_TABLE)
     }
 
     // -- Note --

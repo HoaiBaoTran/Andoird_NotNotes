@@ -1,0 +1,11 @@
+package com.example.notnotes
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+
+class TrashActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_trash)
+    }
+}

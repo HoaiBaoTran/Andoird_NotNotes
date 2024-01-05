@@ -13,6 +13,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -32,6 +34,7 @@ import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.example.notnotes.noteservice.MyNoteAdapter
 import com.example.notnotes.noteservice.NoteDetailFragment
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 
 class MainActivity :
@@ -39,14 +42,14 @@ class MainActivity :
     FragmentListener,
     FirebaseReadUserListener,
     ItemClickListener,
-    FirebaseReadNoteListener{
+    FirebaseReadNoteListener,
+    NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var noteAdapter: MyNoteAdapter
     private lateinit var noteList: ArrayList<Note>
     private lateinit var database: FirebaseService
     private lateinit var user: User
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +67,8 @@ class MainActivity :
         toggle.drawerArrowDrawable.color = resources.getColor(R.color.white)
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
+        binding.navigationView.setNavigationItemSelectedListener(this)
 
         // supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
@@ -112,14 +117,13 @@ class MainActivity :
         fragmentTransaction.commit()
     }
 
-
-
     private fun hideComponents () {
         binding.recyclerview.visibility = View.GONE
         binding.fab.visibility = View.GONE
         binding.fragmentContainer.visibility = View.VISIBLE
     }
-     private fun showComponents () {
+
+    private fun showComponents () {
         binding.recyclerview.visibility = View.VISIBLE
         binding.fab.visibility = View.VISIBLE
         binding.fragmentContainer.visibility = View.GONE
@@ -220,7 +224,6 @@ class MainActivity :
         }
     }
 
-
     // -- Item Click Listener --
     override fun onItemClick(note: Note) {
         val bundle = Bundle()
@@ -275,6 +278,9 @@ class MainActivity :
 
     override fun onBackPressed() {
         showComponents()
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+        }
         super.onBackPressed()
     }
 
@@ -336,5 +342,42 @@ class MainActivity :
         recreate()
         database.getNotes()
         super.onRestart()
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_notes -> {
+
+            }
+            R.id.nav_storage -> {
+
+            }
+            R.id.nav_label -> {
+
+            }
+            R.id.nav_recycle_bin -> {
+
+            }
+            R.id.nav_profile -> {
+                openProfileActivity()
+            }
+            R.id.nav_change_pass -> {
+                openChangePasswordActivity()
+            }
+            R.id.nav_logout -> {
+                logoutAccount()
+            }
+            R.id.nav_setting -> {
+                openSettingActivity()
+            }
+        }
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragmentContainer, fragment)
+        transaction.commit()
     }
 }

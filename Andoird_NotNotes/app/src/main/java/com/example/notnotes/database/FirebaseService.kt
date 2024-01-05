@@ -175,8 +175,8 @@ class FirebaseService(
         val email = firebaseUser!!.email!!
         val credential = EmailAuthProvider.getCredential(email, oldPassword)
 
-        firebaseUser?.reauthenticate(credential)
-            ?.addOnCompleteListener {
+        firebaseUser.reauthenticate(credential)
+            .addOnCompleteListener {
                 task ->
                     if (task.isSuccessful) {
                         firebaseUser.updatePassword(newPassword).addOnCompleteListener {
@@ -285,7 +285,7 @@ class FirebaseService(
         alertDialog.setTitle(title)
         alertDialog.setMessage(message)
 
-        alertDialog.setPositiveButton("Continue") { dialog, _ ->
+        alertDialog.setPositiveButton("Continue") { _, _ ->
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_APP_EMAIL)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

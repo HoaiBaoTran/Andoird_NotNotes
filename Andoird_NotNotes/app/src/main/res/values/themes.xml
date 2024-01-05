@@ -7,7 +7,16 @@
 
     <style name="Theme.NotNotes" parent="Base.Theme.NotNotes" />
     <!-- Base application theme. -->
-    <style name="Base.MyAppThemeSwitch" parent="Theme.Material3.DayNight.NoActionBar"/>
+    <style name="Base.MyAppThemeSwitch" parent="Theme.Material3.DayNight.NoActionBar" />
 
     <style name="MyAppThemeSwitch" parent="Base.MyAppThemeSwitch" />
+
+    <style name="MyAppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="MyAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="MyAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

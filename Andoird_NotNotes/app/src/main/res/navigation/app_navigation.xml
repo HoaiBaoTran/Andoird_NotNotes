@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_navigation"
+    app:startDestination="@+id/nav_notes">
+
+    <activity
+        android:id="@+id/nav_setting"
+        android:name="com.example.notnotes.appservice.SettingActivity"
+        android:label="@string/nav_setting"
+        tools:layout="@layout/activity_setting" />
+</navigation>

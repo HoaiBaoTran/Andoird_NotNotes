@@ -37,8 +37,6 @@ class NoteDetailFragment :
         return binding.root
     }
 
-
-
     override fun onDetach() {
         super.onDetach()
         fragmentListener = null

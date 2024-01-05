@@ -31,6 +31,8 @@ class ProfileActivity :
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         NO_INFORMATION = getString(R.string.no_information)

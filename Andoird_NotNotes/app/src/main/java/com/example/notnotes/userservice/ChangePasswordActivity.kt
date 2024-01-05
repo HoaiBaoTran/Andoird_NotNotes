@@ -28,6 +28,7 @@ class ChangePasswordActivity :
         binding = ActivityChangePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initShowHidePasswordFeature()

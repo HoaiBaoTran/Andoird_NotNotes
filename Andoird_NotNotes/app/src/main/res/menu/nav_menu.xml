@@ -17,11 +17,6 @@
             android:id="@+id/nav_recycle_bin"
             android:title="@string/nav_recycle_bin"
             android:icon="@drawable/ic_trash"/>
-        <item
-            android:id="@+id/nav_setting"
-            android:title="@string/nav_setting"
-            android:icon="@drawable/ic_settings"/>
-
         <item android:title="@string/nav_account">
             <menu>
                 <item
@@ -36,6 +31,10 @@
                     android:id="@+id/nav_logout"
                     android:title="@string/nav_logout"
                     android:icon="@drawable/ic_logout"/>
+                <item
+                    android:id="@+id/nav_setting"
+                    android:title="@string/nav_setting"
+                    android:icon="@drawable/ic_settings"/>
             </menu>
         </item>
     </group>
