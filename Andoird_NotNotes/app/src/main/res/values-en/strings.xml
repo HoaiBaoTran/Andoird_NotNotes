@@ -78,8 +78,8 @@
     <string name="formatted_string">Hello, %s! Welcome to our app.</string>
     <string name="title">Title</string>
     <string name="content">Content</string>
-    <string name="progress">Progress: %s%%</string>
-    <string name="label">Label: %s</string>
+    <string name="progress">Progress: </string>
+    <string name="label">Label: </string>
     <string name="add_note_success">Add note successfully</string>
     <string name="forgot_password">Forgot password ???</string>
     <string name="relax_and_try_to_remember_your_password">Relax and try to remember your password !!!</string>
@@ -145,4 +145,9 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="deadline_date">Deadline: </string>
+    <string name="deadline_time">Time: </string>
+    <string name="exit_title">Exit Dialog</string>
+    <string name="exit_message">You haven\'t saved your note. Are you sure want to exit?</string>
+    <string name="exit">Exit</string>
 </resources>

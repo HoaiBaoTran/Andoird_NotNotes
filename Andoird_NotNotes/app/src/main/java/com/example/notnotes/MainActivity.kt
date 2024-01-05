@@ -366,11 +366,6 @@ class MainActivity :
         super.onRestart()
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//        getUserFromDatabase()
-//        database.getNotes()
-//    }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

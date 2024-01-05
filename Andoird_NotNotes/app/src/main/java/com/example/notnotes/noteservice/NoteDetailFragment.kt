@@ -11,27 +11,37 @@ import com.example.notnotes.MainActivity
 import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.FragmentNoteDetailBinding
+import com.example.notnotes.listener.DatePickerListener
+import com.example.notnotes.listener.TimerPickerListener
 import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FragmentListener
 import com.example.notnotes.model.Note
-import com.example.notnotes.model.User
 import java.util.Timer
 import kotlin.concurrent.schedule
 
 class NoteDetailFragment :
     Fragment(),
-    FirebaseNoteListener {
+    FirebaseNoteListener,
+    DatePickerListener,
+    TimerPickerListener {
 
     private lateinit var binding: FragmentNoteDetailBinding
     private lateinit var database: FirebaseService
     private var fragmentListener: FragmentListener? = null
     private var isEdit = false
     private var editNote = Note()
+
+    private var currentDay: Int? = null
+    private var currentMonth: Int? = null
+    private var currentYear: Int? = null
+
+    private var currentHour: Int? = null
+    private var currentMinute: Int? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentNoteDetailBinding.inflate(inflater, container, false)
         database = FirebaseService(requireContext(), this)
         return binding.root
@@ -57,7 +67,15 @@ class NoteDetailFragment :
         }
 
         binding.btnBackNote.setOnClickListener {
-            closeFragment()
+            showConfirmBackDialog()
+        }
+
+        binding.etDateDeadline.setOnClickListener {
+            datePicker()
+        }
+
+        binding.etTimeDeadline.setOnClickListener {
+            timePicker()
         }
 
 
@@ -78,6 +96,16 @@ class NoteDetailFragment :
         binding.tietContent.setText(note.content)
         binding.etLabel.setText(note.label)
         binding.etProgress.setText(note.progress)
+    }
+
+    private fun datePicker() {
+        val datePickerFragment = DatePickerFragment(currentDay, currentMonth, currentYear)
+        datePickerFragment.display(requireActivity().supportFragmentManager, "datePicker", this)
+    }
+
+    private fun timePicker() {
+        val timePickerFragment = TimePickerFragment(currentHour, currentMinute)
+        timePickerFragment.display(requireActivity().supportFragmentManager, "timePicker", this)
     }
 
 
@@ -129,6 +157,27 @@ class NoteDetailFragment :
         dialog.show()
     }
 
+    private fun showConfirmBackDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val title = getString(R.string.exit_title)
+        val message = getString(R.string.exit_message)
+        val exitBtnText = getString(R.string.exit)
+        val cancelBtnText = getString(R.string.cancel)
+        builder
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(exitBtnText) { dialog, _ ->
+                dialog.dismiss()
+                closeFragment()
+            }
+            .setNegativeButton(cancelBtnText) { dialog, _ ->
+                dialog.dismiss()
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
     private fun closeFragment() {
         requireActivity().supportFragmentManager.popBackStack(
             "NoteDetailFragment",
@@ -161,6 +210,30 @@ class NoteDetailFragment :
 
     override fun onUpdateNoteFailure() {
 
+    }
+
+    override fun onDateSelected(day: Int, month: Int, year: Int) {
+        // month value 0 -> 11
+        val dayFormatted = if(day < 10) "0$day" else day.toString()
+        val monthFormatted = if(month < 9) "0${month + 1}" else (month + 1).toString()
+        val date = "$dayFormatted/$monthFormatted/$year"
+        currentDay = day
+        currentMonth = month
+        currentYear = year
+        val formatString = getString(R.string.deadline_date)
+        val dateText = "$formatString $date"
+        binding.etDateDeadline.setText(dateText)
+    }
+
+    override fun onTimeSelected(hour: Int, minute: Int) {
+        val hourFormatted = if (hour < 10) "0$hour" else hour.toString()
+        val minuteFormatted = if (minute < 10) "0$minute" else minute.toString()
+        val time = "$hourFormatted:$minuteFormatted"
+        currentHour = hour
+        currentMinute = minute
+        val formatString = getString(R.string.deadline_time)
+        val timeText = "$formatString $time"
+        binding.etTimeDeadline.setText(timeText)
     }
 
 }
