@@ -3,6 +3,7 @@ package com.example.notnotes
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -11,6 +12,8 @@ import android.text.style.StyleSpan
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
@@ -36,6 +39,7 @@ import com.example.notnotes.noteservice.MyNoteAdapter
 import com.example.notnotes.noteservice.NoteDetailFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
+import com.squareup.picasso.Picasso
 
 class MainActivity :
     SettingActivity(),
@@ -76,6 +80,7 @@ class MainActivity :
 
         database = FirebaseService(this, this)
         database.firebaseReadNoteListener = this
+        getUserFromDatabase()
 
         binding.fab.setOnClickListener {
             openNoteDetailFragment(null)
@@ -85,12 +90,14 @@ class MainActivity :
             database.getNotes()
         }
 
+    }
+
+    private fun getUserFromDatabase() {
         val firebaseUser = database.auth.currentUser
         if (firebaseUser != null) {
             database.getUserFromFirebaseUser(firebaseUser)
             checkIfEmailVerified(firebaseUser)
         }
-
     }
 
     private fun checkIfEmailVerified(firebaseUser: FirebaseUser) {
@@ -131,24 +138,38 @@ class MainActivity :
 
     private fun initViews() {
         initRecyclerView()
+        initNavHeaderView()
     }
 
-//    private fun initHelloTextView() {
-//        val userName = user.fullName
+
+    private fun initNavHeaderView() {
+        val userName = user.fullName
 //        val formattedString = getString(R.string.formatted_string, userName)
-//
-//        val spannableString = SpannableString(formattedString)
-//
+        val spannableString = SpannableString(userName)
+
 //        val start = formattedString.indexOf(userName)
-//        val end = start + userName.length
-//        val styleSpan = StyleSpan(Typeface.BOLD)
-//        spannableString.setSpan(styleSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//
-//        val colorSpan = ForegroundColorSpan(resources.getColor(R.color.pink))
-//        spannableString.setSpan(colorSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//
-//        binding.tvUsername.text = spannableString
-//    }
+        val start = 0
+        val end = start + userName.length
+        val styleSpan = StyleSpan(Typeface.BOLD)
+        spannableString.setSpan(styleSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val colorSpan = ForegroundColorSpan(resources.getColor(R.color.lightgray))
+        spannableString.setSpan(colorSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val headerView = binding.navigationView.getHeaderView(0)
+        val headerText: TextView = headerView.findViewById(R.id.tvNavHeader)
+        val imgProfile: ImageView = headerView.findViewById(R.id.imgProfile)
+        headerText.text = spannableString
+
+        val uri: Uri? = database.auth.currentUser?.photoUrl
+
+        if (uri != null) {
+            Picasso.with(this).load(uri)
+                .fit()
+                .centerCrop()
+                .into(imgProfile)
+        }
+    }
 
     private fun initRecyclerView() {
         noteList = ArrayList()
@@ -340,9 +361,16 @@ class MainActivity :
 
     override fun onRestart() {
         recreate()
+        getUserFromDatabase()
         database.getNotes()
         super.onRestart()
     }
+
+//    override fun onStart() {
+//        super.onStart()
+//        getUserFromDatabase()
+//        database.getNotes()
+//    }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

@@ -190,10 +190,7 @@ class UploadImageProfileActivity :
         val message = getString(R.string.upload_picture_success)
         showDialog(title, message)
 
-        Timer().schedule(3000) {
-            val intent = Intent(this@UploadImageProfileActivity, ProfileActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+        Timer().schedule(2000) {
             finish()
         }
     }

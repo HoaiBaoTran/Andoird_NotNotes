@@ -17,7 +17,8 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+            android:theme="@style/MyAppThemeSwitch">
+<!--            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">-->
             
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/tool_bar"
@@ -26,6 +27,8 @@
                 android:background="@color/bluebutton"
                 app:titleTextColor="@color/white"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+<!--                app:popupTheme="@style/MyAppThemeSwitch"/>-->
+
             
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -58,10 +61,6 @@
             android:layout_height="match_parent"
             android:visibility="gone"/>
 
-<!--        <FrameLayout-->
-<!--            android:id="@+id/content_frame"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent" />-->
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView

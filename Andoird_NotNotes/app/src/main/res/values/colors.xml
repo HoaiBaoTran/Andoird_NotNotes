@@ -5,4 +5,7 @@
     <color name="bluebutton">#4461FF</color>
     <color name="redtext">#941822</color>
     <color name="pink">#FF4081</color>
+    <color name="lightpink">#FF80AB</color>
+    <color name="lightyelow">#F28500</color>
+    <color name="lightgray">#C8D6E5</color>
 </resources>

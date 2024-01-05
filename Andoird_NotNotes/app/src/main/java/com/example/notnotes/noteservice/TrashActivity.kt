@@ -1,7 +1,8 @@
-package com.example.notnotes
+package com.example.notnotes.noteservice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.notnotes.R
 
 class TrashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
