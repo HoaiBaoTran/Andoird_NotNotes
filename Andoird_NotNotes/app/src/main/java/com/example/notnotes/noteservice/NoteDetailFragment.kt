@@ -1,6 +1,8 @@
 package com.example.notnotes.noteservice
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,6 +80,34 @@ class NoteDetailFragment :
             timePicker()
         }
 
+        binding.etProgress.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                var percent = s.toString().toDoubleOrNull()
+                if (percent != null) {
+                    if (percent > 100) {
+                        percent = 100.0
+                    }
+                    else if (percent < 0) {
+                        percent = 0.0
+                    }
+                }
+                else {
+                    percent = 0.0
+                }
+                binding.progressBar.progress = percent?.toInt() ?: 0
+                binding.tvProgress.text = getString(R.string.template_percent, percent)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+        })
+
 
         binding.btnSaveNote.setOnClickListener {
             if (checkValidField()) {
@@ -96,6 +126,8 @@ class NoteDetailFragment :
         binding.tietContent.setText(note.content)
         binding.etLabel.setText(note.label)
         binding.etProgress.setText(note.progress)
+        binding.progressBar.progress = note.progress?.toInt() ?: 0
+        binding.tvProgress.text = getString(R.string.template_percent, note.progress?.toDouble())
     }
 
     private fun datePicker() {
@@ -220,9 +252,7 @@ class NoteDetailFragment :
         currentDay = day
         currentMonth = month
         currentYear = year
-        val formatString = getString(R.string.deadline_date)
-        val dateText = "$formatString $date"
-        binding.etDateDeadline.setText(dateText)
+        binding.etDateDeadline.setText(date)
     }
 
     override fun onTimeSelected(hour: Int, minute: Int) {
@@ -231,9 +261,7 @@ class NoteDetailFragment :
         val time = "$hourFormatted:$minuteFormatted"
         currentHour = hour
         currentMinute = minute
-        val formatString = getString(R.string.deadline_time)
-        val timeText = "$formatString $time"
-        binding.etTimeDeadline.setText(timeText)
+        binding.etTimeDeadline.setText(time)
     }
 
 }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -42,39 +43,112 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/tvLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
         <EditText
             android:id="@+id/etLabel"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:hint="@string/label"
+            android:hint="@string/science"
             android:inputType="text"/>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvProgressLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/progress"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <EditText
             android:id="@+id/etProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/progress"
-            android:inputType="text"/>
-    </LinearLayout>
+            android:hint="60"
+            android:inputType="numberDecimal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvProgressLabel"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:indeterminateOnly="false"
+            android:progressDrawable="@drawable/circle"
+            android:progress="60"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/etProgress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="60%"
+            app:layout_constraintTop_toTopOf="@id/progressBar"
+            app:layout_constraintBottom_toBottomOf="@id/progressBar"
+            app:layout_constraintStart_toStartOf="@id/progressBar"
+            app:layout_constraintEnd_toEndOf="@id/progressBar"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/tvDateDeadlineLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/deadline_date"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
         <EditText
             android:id="@+id/etDateDeadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/deadline_date"
+            android:hint="@string/example_date"
             android:clickable="true"
             android:focusable="false" />
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:id="@+id/tvTimeDeadlineLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/deadline_time"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/etTimeDeadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/deadline_time"
+            android:hint="@string/example_time"
             android:clickable="true"
             android:focusable="false" />
 
