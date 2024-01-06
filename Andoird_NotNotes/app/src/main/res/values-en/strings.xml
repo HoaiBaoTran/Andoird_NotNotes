@@ -160,4 +160,5 @@
     <string name="are_you_sure_want_to_restore_note">Are you sure want to restore note</string>
     <string name="move_note_to_trash_success">Move note to trash bin successfully</string>
     <string name="restore">Restore</string>
+    <string name="search_note_by_label">Search label:</string>
 </resources>

@@ -6,8 +6,10 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.MenuItem
@@ -90,6 +92,24 @@ class MainActivity :
         binding.fab.setOnClickListener {
             openNoteDetailFragment(null)
         }
+
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+            override fun afterTextChanged(s: Editable?) {
+                val label = s.toString()
+                if (label.isEmpty()) {
+                    database.getNotes()
+                }
+                else {
+                    database.getNotesByLabel(label)
+                }
+            }
+        })
 
         supportFragmentManager.addOnBackStackChangedListener {
             database.getNotes()

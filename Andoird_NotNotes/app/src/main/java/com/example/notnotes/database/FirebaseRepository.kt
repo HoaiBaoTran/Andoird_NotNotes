@@ -111,8 +111,27 @@ class FirebaseRepository(private val context: Context) {
                     note?.id = noteSnapshot.key.toString()
                     note?.deleted = note?.let { noteSnapshot.child("deleted").getValue(Boolean::class.java) } == true
                     if (note != null) {
-                        Log.d("FirebaseRepository", note.deleted.toString())
-                        Log.d("FirebaseRepository", note.toString())
+                        notes.add(note)
+                    }
+                }
+                firebaseReadNoteListener!!.onReadNoteListComplete(notes)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                firebaseReadNoteListener!!.onReadNoteListFailure()
+            }
+        })
+    }
+
+    fun getNotesByLabel(userId: String, label: String) {
+        connectNoteRef(userId)
+        val notes = ArrayList<Note>()
+        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (noteSnapshot in snapshot.children) {
+                    val note = noteSnapshot.getValue(Note::class.java)
+                    note?.id = noteSnapshot.key.toString()
+                    note?.deleted = note?.let { noteSnapshot.child("deleted").getValue(Boolean::class.java) } == true
+                    if (note != null && note.label == label) {
                         notes.add(note)
                     }
                 }

@@ -158,6 +158,8 @@ class NoteDetailFragment :
         note.content = binding.tietContent.text.toString()
         note.progress = binding.etProgress.text.toString()
         note.label = binding.etLabel.text.toString()
+        note.deadlineDate = binding.etDateDeadline.text.toString()
+        note.deadlineTime = binding.etTimeDeadline.text.toString()
 
         return note
     }

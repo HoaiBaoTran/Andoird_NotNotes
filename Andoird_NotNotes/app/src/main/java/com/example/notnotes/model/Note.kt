@@ -2,7 +2,6 @@ package com.example.notnotes.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.firebase.database.PropertyName
 
 class Note() : Parcelable {
     var id: String = ""
@@ -11,6 +10,8 @@ class Note() : Parcelable {
     var progress: String? = ""
     var label: String? = ""
     var deleted: Boolean = false
+    var deadlineDate: String? = ""
+    var deadlineTime: String? = ""
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString().toString()
@@ -18,10 +19,14 @@ class Note() : Parcelable {
         content = parcel.readString()
         progress = parcel.readString()
         label = parcel.readString()
+        deleted = parcel.readByte() != 0.toByte()
+        deadlineDate = parcel.readString()
+        deadlineTime = parcel.readString()
     }
 
+
     override fun toString(): String {
-        return "Note[$id - $title - $progress - $label - $deleted]"
+        return "Note[$id - $title - $progress - $label - $deleted - $deadlineDate - $deadlineTime"
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -30,6 +35,9 @@ class Note() : Parcelable {
         parcel.writeString(content)
         parcel.writeString(progress)
         parcel.writeString(label)
+        parcel.writeByte(if (deleted) 1 else 0)
+        parcel.writeString(deadlineDate)
+        parcel.writeString(deadlineTime)
     }
 
     override fun describeContents(): Int {
@@ -45,4 +53,6 @@ class Note() : Parcelable {
             return arrayOfNulls(size)
         }
     }
+
+
 }
