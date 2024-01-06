@@ -16,6 +16,7 @@ import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseResetPasswordListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
 import com.example.notnotes.listener.FirebaseUploadImageListener
+import com.example.notnotes.model.Label
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.google.firebase.auth.EmailAuthProvider
@@ -342,5 +343,9 @@ class FirebaseService(
         firebaseRepository.getUserFromId(id)
     }
 
-
+    fun addLabel(label: Label) {
+        val firebaseUser = auth.currentUser
+        val userId = firebaseUser!!.uid
+        firebaseRepository.addLabel(label, userId)
+    }
 }

@@ -163,4 +163,5 @@
     <string name="search_note_by_label">Search label:</string>
     <string name="search_by_title">"Search title:"</string>
     <string name="search_by_content">"Search content:"</string>
+    <string name="add_label">Add label</string>
 </resources>

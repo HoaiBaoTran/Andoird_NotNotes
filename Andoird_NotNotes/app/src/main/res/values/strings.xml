@@ -163,4 +163,5 @@
     <string name="search_note_by_label">Tìm nhãn:</string>
     <string name="search_by_title">"Tìm tiêu đề:"</string>
     <string name="search_by_content">"Tìm nội dung:"</string>
+    <string name="add_label">Tạo nhãn</string>
 </resources>

@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
+import com.example.notnotes.listener.FirebaseLabelListener
 import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
+import com.example.notnotes.model.Label
 import com.example.notnotes.model.Note
 import com.example.notnotes.model.User
 import com.google.firebase.Firebase
@@ -26,6 +28,7 @@ class FirebaseRepository(private val context: Context) {
     var firebaseUpdateUserListener: FirebaseUpdateUserListener? = null
     var firebaseNoteListener: FirebaseNoteListener? = null
     var firebaseReadNoteListener: FirebaseReadNoteListener? = null
+    var firebaseLabelListener: FirebaseLabelListener? = null
 
     private val USER_TABLE = "User"
     private val NOTE_TABLE = "Note"
@@ -41,16 +44,8 @@ class FirebaseRepository(private val context: Context) {
         reference = db.getReference(NOTE_TABLE).child(userId)
     }
 
-    private fun connectLabelRef() {
-        reference = db.getReference(LABEL_TABLE)
-    }
-
-    private fun connectStorageRef() {
-        reference = db.getReference(STORAGE_TABLE)
-    }
-
-    private fun connectTrashRef() {
-        reference = db.getReference(TRASH_TABLE)
+    private fun connectLabelRef(userId: String) {
+        reference = db.getReference(LABEL_TABLE).child(userId)
     }
 
     // -- Note --
@@ -224,6 +219,38 @@ class FirebaseRepository(private val context: Context) {
             }
 
         })
+    }
+
+    fun addLabel(label: Label, userId: String) {
+        connectLabelRef(userId)
+        val key = reference.push().key
+        reference.child(key!!).setValue(label)
+            .addOnCompleteListener {
+                    task ->
+                if (task.isSuccessful) {
+                    firebaseLabelListener!!.onAddLabelSuccess()
+                }
+                else {
+                    firebaseLabelListener!!.onAddLabelFailure()
+                }
+
+            }
+    }
+
+    fun deleteLabel(label: String, userId: String) {
+        connectNoteRef(userId)
+        reference.child(label).removeValue()
+            .addOnCompleteListener {task ->
+                if (task.isSuccessful) {
+                    firebaseReadNoteListener!!.onDeleteNoteSuccess()
+                }
+                else {
+                    firebaseReadNoteListener!!.onDeleteNoteFailure()
+                }
+            }
+            .addOnFailureListener {
+                firebaseReadNoteListener!!.onDeleteNoteFailure()
+            }
     }
 
 }
