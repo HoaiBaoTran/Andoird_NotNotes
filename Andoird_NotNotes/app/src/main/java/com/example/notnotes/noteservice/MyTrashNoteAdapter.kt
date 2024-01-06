@@ -77,11 +77,8 @@ class MyTrashNoteAdapter(
             }
         }
         else {
-            holder.tvTitle.text = ""
-            holder.tvContent.text = ""
-            holder.tvProgress.text = ""
-            holder.tvLabel.text = ""
-            holder.btnDelete.visibility = View.GONE
+            holder.itemView.visibility = View.GONE
+            holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
         }
     }
 }
