@@ -27,6 +27,43 @@
         android:elevation="15dp"
         android:visibility="gone"/>
 
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rbLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label"
+            android:checked="true"
+            android:theme="@style/MyAppTheme"
+            android:layout_marginEnd="16dp"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rbTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            android:checked="false"
+            android:theme="@style/MyAppTheme"
+            android:layout_marginEnd="16dp"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rbContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/content"
+            android:checked="false"
+            android:theme="@style/MyAppTheme"
+            android:textSize="20sp"/>
+
+    </RadioGroup>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

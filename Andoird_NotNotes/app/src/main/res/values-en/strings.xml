@@ -79,7 +79,7 @@
     <string name="title">Title</string>
     <string name="content">Content</string>
     <string name="progress">Progress: </string>
-    <string name="label">Label: </string>
+    <string name="label">Label</string>
     <string name="add_note_success">Add note successfully</string>
     <string name="forgot_password">Forgot password ???</string>
     <string name="relax_and_try_to_remember_your_password">Relax and try to remember your password !!!</string>
@@ -161,4 +161,6 @@
     <string name="move_note_to_trash_success">Move note to trash bin successfully</string>
     <string name="restore">Restore</string>
     <string name="search_note_by_label">Search label:</string>
+    <string name="search_by_title">"Search title:"</string>
+    <string name="search_by_content">"Search content:"</string>
 </resources>

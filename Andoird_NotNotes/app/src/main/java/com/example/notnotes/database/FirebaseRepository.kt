@@ -131,7 +131,49 @@ class FirebaseRepository(private val context: Context) {
                     val note = noteSnapshot.getValue(Note::class.java)
                     note?.id = noteSnapshot.key.toString()
                     note?.deleted = note?.let { noteSnapshot.child("deleted").getValue(Boolean::class.java) } == true
-                    if (note != null && note.label == label) {
+                    if (note != null && note.label?.lowercase()?.contains(label.lowercase()) == true) {
+                        notes.add(note)
+                    }
+                }
+                firebaseReadNoteListener!!.onReadNoteListComplete(notes)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                firebaseReadNoteListener!!.onReadNoteListFailure()
+            }
+        })
+    }
+
+    fun getNotesByTitle(userId: String, title: String) {
+        connectNoteRef(userId)
+        val notes = ArrayList<Note>()
+        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (noteSnapshot in snapshot.children) {
+                    val note = noteSnapshot.getValue(Note::class.java)
+                    note?.id = noteSnapshot.key.toString()
+                    note?.deleted = note?.let { noteSnapshot.child("deleted").getValue(Boolean::class.java) } == true
+                    if (note != null && note.title.lowercase().contains(title.lowercase())) {
+                        notes.add(note)
+                    }
+                }
+                firebaseReadNoteListener!!.onReadNoteListComplete(notes)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                firebaseReadNoteListener!!.onReadNoteListFailure()
+            }
+        })
+    }
+
+    fun getNotesByContent(userId: String, content: String) {
+        connectNoteRef(userId)
+        val notes = ArrayList<Note>()
+        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (noteSnapshot in snapshot.children) {
+                    val note = noteSnapshot.getValue(Note::class.java)
+                    note?.id = noteSnapshot.key.toString()
+                    note?.deleted = note?.let { noteSnapshot.child("deleted").getValue(Boolean::class.java) } == true
+                    if (note != null && note.content?.lowercase()?.contains(content.lowercase()) == true) {
                         notes.add(note)
                     }
                 }

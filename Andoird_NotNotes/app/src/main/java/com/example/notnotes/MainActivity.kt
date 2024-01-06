@@ -15,6 +15,7 @@ import android.text.style.StyleSpan
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -60,6 +61,8 @@ class MainActivity :
     private lateinit var database: FirebaseService
     private lateinit var user: User
 
+    private var searchByKeyId: Int = R.id.rbLabel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -93,6 +96,23 @@ class MainActivity :
             openNoteDetailFragment(null)
         }
 
+        binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.rbTitle -> {
+                    binding.tvSearch.text = getString(R.string.search_by_title)
+                    searchByKeyId = R.id.rbTitle
+                }
+                R.id.rbLabel -> {
+                    binding.tvSearch.text = getString(R.string.search_note_by_label)
+                    searchByKeyId = R.id.rbLabel
+                }
+                R.id.rbContent -> {
+                    binding.tvSearch.text = getString(R.string.search_by_content)
+                    searchByKeyId = R.id.rbContent
+                }
+            }
+        }
+
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -106,7 +126,13 @@ class MainActivity :
                     database.getNotes()
                 }
                 else {
-                    database.getNotesByLabel(label)
+                    when (searchByKeyId) {
+                        R.id.rbLabel -> database.getNotesByLabel(label)
+                        R.id.rbTitle -> database.getNotesByTitle(label)
+                        R.id.rbContent -> database.getNotesByContent(label)
+                        else -> database.getNotes()
+                    }
+
                 }
             }
         })

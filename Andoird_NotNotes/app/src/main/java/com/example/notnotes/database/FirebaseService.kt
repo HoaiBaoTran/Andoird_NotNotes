@@ -133,6 +133,16 @@ class FirebaseService(
         firebaseRepository.getNotesByLabel(userId, label)
     }
 
+    fun getNotesByTitle(title: String) {
+        val userId = auth.currentUser!!.uid
+        firebaseRepository.getNotesByTitle(userId, title)
+    }
+
+    fun getNotesByContent(content: String) {
+        val userId = auth.currentUser!!.uid
+        firebaseRepository.getNotesByContent(userId, content)
+    }
+
     // -- USER --
     fun changeProfilePic(uriImage: Uri) {
         val firebaseUser = auth.currentUser!!
