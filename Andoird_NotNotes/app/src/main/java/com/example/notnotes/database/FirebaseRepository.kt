@@ -228,7 +228,7 @@ class FirebaseRepository(private val context: Context) {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (labelSnapshot in snapshot.children) {
                     val label = labelSnapshot.getValue(Label::class.java)
-                    label?.id = labelSnapshot.key.toString()
+//                    label?.id = labelSnapshot.key.toString()
                     if (label != null) {
                         labels.add(label)
                     }
@@ -243,8 +243,8 @@ class FirebaseRepository(private val context: Context) {
 
     fun addLabel(label: Label, userId: String) {
         connectLabelRef(userId)
-        val key = reference.push().key
-        reference.child(key!!).setValue(label)
+//        val key = reference.push().key
+        reference.child(label.name).setValue(label)
             .addOnCompleteListener {
                     task ->
                 if (task.isSuccessful) {
@@ -257,19 +257,19 @@ class FirebaseRepository(private val context: Context) {
             }
     }
 
-    fun deleteLabel(label: String, userId: String) {
-        connectNoteRef(userId)
-        reference.child(label).removeValue()
+    fun deleteLabel(label: Label, userId: String) {
+        connectLabelRef(userId)
+        reference.child(label.name).removeValue()
             .addOnCompleteListener {task ->
                 if (task.isSuccessful) {
-                    firebaseReadNoteListener!!.onDeleteNoteSuccess()
+                    firebaseReadLabelListener!!.onDeleteLabelSuccess()
                 }
                 else {
-                    firebaseReadNoteListener!!.onDeleteNoteFailure()
+                    firebaseReadLabelListener!!.onDeleteLabelFailure()
                 }
             }
             .addOnFailureListener {
-                firebaseReadNoteListener!!.onDeleteNoteFailure()
+                firebaseReadLabelListener!!.onDeleteLabelFailure()
             }
     }
 

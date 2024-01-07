@@ -514,9 +514,4 @@ class MainActivity :
 
     }
 
-//    private fun replaceFragment(fragment: Fragment) {
-//        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-//        transaction.replace(R.id.fragmentContainer, fragment)
-//        transaction.commit()
-//    }
 }

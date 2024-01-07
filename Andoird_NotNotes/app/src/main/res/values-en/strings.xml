@@ -164,4 +164,8 @@
     <string name="search_by_title">"Search title:"</string>
     <string name="search_by_content">"Search content:"</string>
     <string name="add_label">Add label</string>
+    <string name="delete_label">Delete label</string>
+    <string name="are_you_sure_want_to_delete_label">Are you sure want to delete label</string>
+    <string name="delete_label_success">Delete label successfully</string>
+    <string name="delete_label_fail">Delete label fail</string>
 </resources>

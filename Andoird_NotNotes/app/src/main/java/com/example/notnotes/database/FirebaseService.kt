@@ -8,6 +8,7 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
+import com.example.notnotes.listener.FirebaseLabelListener
 import com.example.notnotes.listener.FirebaseLoginUserListener
 import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadLabelListener
@@ -39,6 +40,7 @@ class FirebaseService(
     private lateinit var firebaseResetPasswordListener: FirebaseResetPasswordListener
     private lateinit var firebaseUploadImageListener: FirebaseUploadImageListener
     private lateinit var firebaseReadLabelListener: FirebaseReadLabelListener
+    private lateinit var firebaseLabelListener: FirebaseLabelListener
 
     var firebaseReadNoteListener: FirebaseReadNoteListener? = null
         set(value) {
@@ -110,10 +112,15 @@ class FirebaseService(
     constructor(
         context: Context,
         firebaseReadLabelListener: FirebaseReadLabelListener,
-        firebaseReadUserListener: FirebaseReadUserListener
+        firebaseReadUserListener: FirebaseReadUserListener,
+        firebaseLabelListener: FirebaseLabelListener,
     ) : this(context) {
         this.firebaseReadLabelListener = firebaseReadLabelListener
         this.firebaseReadUserListener = firebaseReadUserListener
+        this.firebaseLabelListener = firebaseLabelListener
+        firebaseRepository.firebaseReadLabelListener = firebaseReadLabelListener
+        firebaseRepository.firebaseReadUserListener = firebaseReadUserListener
+        firebaseRepository.firebaseLabelListener = firebaseLabelListener
     }
 
     // -- NOTE --
@@ -364,5 +371,11 @@ class FirebaseService(
         val firebaseUser = auth.currentUser
         val userId = firebaseUser!!.uid
         firebaseRepository.addLabel(label, userId)
+    }
+
+    fun deleteLabel(label: Label) {
+        val firebaseUser = auth.currentUser
+        val userId = firebaseUser!!.uid
+        firebaseRepository.deleteLabel(label, userId)
     }
 }

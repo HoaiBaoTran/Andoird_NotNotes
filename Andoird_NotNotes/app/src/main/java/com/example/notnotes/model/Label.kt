@@ -1,3 +1,8 @@
 package com.example.notnotes.model
 
-data class Label(var id: String = "", val name: String = "")
+class Label () {
+    var name: String = ""
+    constructor(name: String) : this() {
+        this.name = name
+    }
+}

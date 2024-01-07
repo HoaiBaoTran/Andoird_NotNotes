@@ -29,7 +29,11 @@ class MyLabelAdapter(
         }
 
         override fun onClick(p0: View?) {
-            TODO("Not yet implemented")
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                val clickedItem = labelList[position]
+                onLabelClickListener.onItemClick(clickedItem)
+            }
         }
 
     }
