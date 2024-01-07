@@ -1,13 +1,23 @@
 package com.example.notnotes.noteservice
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -16,15 +26,13 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.FragmentNoteDetailBinding
 import com.example.notnotes.listener.DatePickerListener
-import com.example.notnotes.listener.FirebaseLabelListener
 import com.example.notnotes.listener.TimerPickerListener
 import com.example.notnotes.listener.FirebaseNoteListener
 import com.example.notnotes.listener.FirebaseReadLabelListener
-import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FragmentListener
+import com.example.notnotes.model.Attachment
 import com.example.notnotes.model.Label
 import com.example.notnotes.model.Note
-import com.example.notnotes.model.User
 import java.util.Timer
 import kotlin.concurrent.schedule
 
@@ -50,6 +58,34 @@ class NoteDetailFragment :
 
     private var labelName: String = "label"
     private var labelList: ArrayList<String> = ArrayList()
+    private var fileNameListText: ArrayList<String> = ArrayList()
+    private var attachmentList: ArrayList<Attachment> = ArrayList()
+    private val filePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val uri = it.data?.data
+            if (uri != null) {
+                Log.d("FragmentDebug", uri.toString())
+                val (fileName, fileType) = getFileNameAndType(requireContext(), uri)
+                if (fileName != null && fileType != null) {
+                    Log.d("FragmentDebug", fileName)
+                    fileNameListText.add(fileName)
+                    val attachment = Attachment(uri.toString(), fileName, fileType)
+                    attachmentList.add(attachment)
+                }
+            }
+        }
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            fileNameListText = it.getStringArrayList("fileNameList")!!
+            attachmentList.clear()
+            attachmentList.addAll(it.getParcelableArrayList("attachmentList")!!)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,10 +96,6 @@ class NoteDetailFragment :
         return binding.root
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        fragmentListener = null
-    }
 
     fun setFragmentListener(listener: FragmentListener) {
         fragmentListener = listener
@@ -71,7 +103,10 @@ class NoteDetailFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        if (fileNameListText.isNotEmpty()) {
+            binding.tvFileLabel.visibility = View.VISIBLE
+            binding.tvFileLabel.text = fileNameListText.joinToString { it -> it }
+        }
         database.getLabels()
 
         val note = arguments?.getParcelable<Note>(MainActivity.NOTE_KEY)
@@ -111,7 +146,7 @@ class NoteDetailFragment :
                 else {
                     percent = 0.0
                 }
-                binding.progressBar.progress = percent?.toInt() ?: 0
+                binding.progressBar.progress = percent.toInt() ?: 0
                 binding.tvProgress.text = getString(R.string.template_percent, percent)
             }
 
@@ -144,15 +179,79 @@ class NoteDetailFragment :
 
             }
         }
+
+        binding.imgBtnAttachFile.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "*/*"
+            filePickerLauncher.launch(intent)
+        }
+
+        (activity as MainActivity).hideComponents()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("fileNameList", fileNameListText)
+        outState.putParcelableArrayList("attachmentList", attachmentList)
+    }
+
+
+    override fun onDetach() {
+        super.onDetach()
+        (activity as MainActivity).showComponents()
+        fragmentListener = null
+    }
+
+    @SuppressLint("Range")
+    private fun getFileNameAndType(context: Context, uri: Uri): Pair<String?, String?> {
+        var fileName: String? = null
+        var fileType: String? = null
+
+        val contentResolver: ContentResolver = context.contentResolver
+
+        // Get file name
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val displayName = it.getString(it.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME))
+                fileName = displayName
+            }
+        }
+
+        // Get file type
+        val mimeType: String? = contentResolver.getType(uri)
+        mimeType?.let {
+            fileType = MimeTypeMap.getSingleton().getExtensionFromMimeType(it)
+        }
+
+        return Pair(fileName, fileType)
     }
 
     private fun loadNoteInformation(note: Note) {
         binding.tietTitle.setText(note.title)
         binding.tietContent.setText(note.content)
-//        binding.etLabel.setText(note.label)
         binding.etProgress.setText(note.progress)
         binding.progressBar.progress = note.progress?.toInt() ?: 0
         binding.tvProgress.text = getString(R.string.template_percent, note.progress?.toDouble())
+        binding.etDateDeadline.setText(note.deadlineDate)
+        binding.etTimeDeadline.setText(note.deadlineTime)
+
+        for (attach in note.attachments) {
+            if (!fileNameListText.contains(attach.fileName)) {
+                fileNameListText.add(attach.fileName)
+                attachmentList.add(attach)
+            }
+        }
+
+        Log.d("FragmentDebug", "loadNoteInformation - note: ${note.attachments}")
+        Log.d("FragmentDebug", "loadNoteInformation - attachment: ${attachmentList}")
+
+        Log.d("FragmentDebug", "loadNoteInformation: $fileNameListText")
+        if (fileNameListText.isNotEmpty()) {
+            binding.tvFileLabel.visibility = View.VISIBLE
+            binding.tvFileLabel.text = fileNameListText.joinToString { it -> it }
+        }
+
     }
 
     private fun datePicker() {
@@ -183,8 +282,13 @@ class NoteDetailFragment :
         note.content = binding.tietContent.text.toString()
         note.progress = binding.etProgress.text.toString()
 //        note.label = binding.etLabel.text.toString()
+
         note.label =
             binding.spinner.selectedItem.toString().ifEmpty { "label" }
+
+        note.attachments.clear()
+        note.attachments.addAll(attachmentList)
+
         note.deadlineDate = binding.etDateDeadline.text.toString()
         note.deadlineTime = binding.etTimeDeadline.text.toString()
 
@@ -202,6 +306,12 @@ class NoteDetailFragment :
         editNote.title = note.title
         editNote.content = note.content
         editNote.label = note.label
+        editNote.deadlineDate = note.deadlineDate
+        editNote.deadlineTime = note.deadlineTime
+
+        editNote.attachments.clear()
+        editNote.attachments.addAll(note.attachments)
+
         database.editNote(editNote)
     }
 

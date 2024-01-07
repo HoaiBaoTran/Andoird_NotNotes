@@ -1,5 +1,6 @@
 package com.example.notnotes
 
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -158,8 +160,6 @@ class MainActivity :
     }
 
     private fun openNoteDetailFragment(bundle: Bundle?) {
-        hideComponents()
-
         val fragment = NoteDetailFragment()
         fragment.arguments = bundle
         fragment.setFragmentListener(this)
@@ -175,7 +175,8 @@ class MainActivity :
         fragmentTransaction.commit()
     }
 
-    private fun hideComponents () {
+
+    fun hideComponents () {
         binding.recyclerview.visibility = View.GONE
         binding.fab.visibility = View.GONE
         binding.etSearch.visibility = View.GONE
@@ -184,7 +185,7 @@ class MainActivity :
         binding.fragmentContainer.visibility = View.VISIBLE
     }
 
-    private fun showComponents () {
+    fun showComponents () {
         binding.recyclerview.visibility = View.VISIBLE
         binding.fab.visibility = View.VISIBLE
         binding.etSearch.visibility = View.VISIBLE

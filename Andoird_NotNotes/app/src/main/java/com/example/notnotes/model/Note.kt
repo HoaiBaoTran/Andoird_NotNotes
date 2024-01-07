@@ -2,6 +2,7 @@ package com.example.notnotes.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import org.checkerframework.checker.units.qual.A
 
 class Note() : Parcelable {
     var id: String = ""
@@ -12,7 +13,7 @@ class Note() : Parcelable {
     var deleted: Boolean = false
     var deadlineDate: String? = ""
     var deadlineTime: String? = ""
-    val attachments: List<Attachment> = emptyList()
+    var attachments: ArrayList<Attachment> = ArrayList()
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString().toString()
@@ -23,8 +24,8 @@ class Note() : Parcelable {
         deleted = parcel.readByte() != 0.toByte()
         deadlineDate = parcel.readString()
         deadlineTime = parcel.readString()
+        attachments = parcel.readArrayList(Attachment::class.java.classLoader) as ArrayList<Attachment>
     }
-
 
     override fun toString(): String {
         return "Note[$id - $title - $progress - $label - $deleted - $deadlineDate - $deadlineTime"
@@ -39,6 +40,7 @@ class Note() : Parcelable {
         parcel.writeByte(if (deleted) 1 else 0)
         parcel.writeString(deadlineDate)
         parcel.writeString(deadlineTime)
+        parcel.writeList(attachments)
     }
 
     override fun describeContents(): Int {
