@@ -53,6 +53,12 @@ class MyTrashNoteAdapter(
         val note = noteList[position]
 
         if (note.deleted) {
+            holder.itemView.visibility = View.VISIBLE
+            holder.itemView.layoutParams =
+                RecyclerView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
             var smallContent: String? = null
             smallContent = if (note.content!!.length >= 200) {
                 note.content?.slice(0..200) + "..."
