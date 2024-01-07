@@ -178,12 +178,18 @@ class MainActivity :
     private fun hideComponents () {
         binding.recyclerview.visibility = View.GONE
         binding.fab.visibility = View.GONE
+        binding.etSearch.visibility = View.GONE
+        binding.radioGroup.visibility = View.GONE
+        binding.tvSearch.visibility = View.GONE
         binding.fragmentContainer.visibility = View.VISIBLE
     }
 
     private fun showComponents () {
         binding.recyclerview.visibility = View.VISIBLE
         binding.fab.visibility = View.VISIBLE
+        binding.etSearch.visibility = View.VISIBLE
+        binding.radioGroup.visibility = View.VISIBLE
+        binding.tvSearch.visibility = View.VISIBLE
         binding.fragmentContainer.visibility = View.GONE
     }
 

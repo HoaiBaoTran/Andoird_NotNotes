@@ -49,15 +49,21 @@
             android:layout_height="wrap_content"
             android:text="@string/label"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp"/>
 
-        <EditText
-            android:id="@+id/etLabel"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="@string/science"
-            android:inputType="text"/>
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+<!--        <EditText-->
+<!--            android:id="@+id/etLabel"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="@string/science"-->
+<!--            android:inputType="text"/>-->
 
     </LinearLayout>
 

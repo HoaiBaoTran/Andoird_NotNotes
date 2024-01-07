@@ -123,6 +123,17 @@ class FirebaseService(
         firebaseRepository.firebaseLabelListener = firebaseLabelListener
     }
 
+    constructor(
+        context: Context,
+        firebaseNoteListener: FirebaseNoteListener,
+        firebaseReadLabelListener: FirebaseReadLabelListener,
+    ) : this(context) {
+        this.firebaseNoteListener = firebaseNoteListener
+        this.firebaseReadLabelListener = firebaseReadLabelListener
+        firebaseRepository.firebaseNoteListener = firebaseNoteListener
+        firebaseRepository.firebaseReadLabelListener = firebaseReadLabelListener
+    }
+
     // -- NOTE --
 
     fun addNote(note: Note) {

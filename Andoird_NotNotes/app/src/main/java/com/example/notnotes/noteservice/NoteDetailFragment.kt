@@ -6,6 +6,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -14,10 +16,15 @@ import com.example.notnotes.R
 import com.example.notnotes.database.FirebaseService
 import com.example.notnotes.databinding.FragmentNoteDetailBinding
 import com.example.notnotes.listener.DatePickerListener
+import com.example.notnotes.listener.FirebaseLabelListener
 import com.example.notnotes.listener.TimerPickerListener
 import com.example.notnotes.listener.FirebaseNoteListener
+import com.example.notnotes.listener.FirebaseReadLabelListener
+import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FragmentListener
+import com.example.notnotes.model.Label
 import com.example.notnotes.model.Note
+import com.example.notnotes.model.User
 import java.util.Timer
 import kotlin.concurrent.schedule
 
@@ -25,7 +32,8 @@ class NoteDetailFragment :
     Fragment(),
     FirebaseNoteListener,
     DatePickerListener,
-    TimerPickerListener {
+    TimerPickerListener,
+    FirebaseReadLabelListener {
 
     private lateinit var binding: FragmentNoteDetailBinding
     private lateinit var database: FirebaseService
@@ -39,13 +47,16 @@ class NoteDetailFragment :
 
     private var currentHour: Int? = null
     private var currentMinute: Int? = null
+
+    private var labelName: String = "label"
+    private var labelList: ArrayList<String> = ArrayList()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentNoteDetailBinding.inflate(inflater, container, false)
-        database = FirebaseService(requireContext(), this)
+        database = FirebaseService(requireContext(), this, this)
         return binding.root
     }
 
@@ -60,6 +71,8 @@ class NoteDetailFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        database.getLabels()
 
         val note = arguments?.getParcelable<Note>(MainActivity.NOTE_KEY)
         if (note != null) {
@@ -119,12 +132,24 @@ class NoteDetailFragment :
                 }
             }
         }
+
+        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Handle the selected item
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+                labelName = selectedItem
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
     }
 
     private fun loadNoteInformation(note: Note) {
         binding.tietTitle.setText(note.title)
         binding.tietContent.setText(note.content)
-        binding.etLabel.setText(note.label)
+//        binding.etLabel.setText(note.label)
         binding.etProgress.setText(note.progress)
         binding.progressBar.progress = note.progress?.toInt() ?: 0
         binding.tvProgress.text = getString(R.string.template_percent, note.progress?.toDouble())
@@ -157,7 +182,9 @@ class NoteDetailFragment :
         note.title = binding.tietTitle.text.toString()
         note.content = binding.tietContent.text.toString()
         note.progress = binding.etProgress.text.toString()
-        note.label = binding.etLabel.text.toString()
+//        note.label = binding.etLabel.text.toString()
+        note.label =
+            binding.spinner.selectedItem.toString().ifEmpty { "label" }
         note.deadlineDate = binding.etDateDeadline.text.toString()
         note.deadlineTime = binding.etTimeDeadline.text.toString()
 
@@ -264,6 +291,29 @@ class NoteDetailFragment :
         currentHour = hour
         currentMinute = minute
         binding.etTimeDeadline.setText(time)
+    }
+
+    override fun onReadLabelListComplete(labels: List<Label>) {
+        labelList = labels.map { it.name } as ArrayList<String>
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, labelList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinner.adapter = adapter
+        if (isEdit) {
+            val index = labelList.indexOf(editNote.label)
+            binding.spinner.setSelection(index)
+        }
+    }
+
+    override fun onReadLabelListFailure() {
+
+    }
+
+    override fun onDeleteLabelSuccess() {
+
+    }
+
+    override fun onDeleteLabelFailure() {
+
     }
 
 }
