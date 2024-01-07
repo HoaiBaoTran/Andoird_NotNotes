@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseLabelListener
 import com.example.notnotes.listener.FirebaseNoteListener
+import com.example.notnotes.listener.FirebaseReadLabelListener
 import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
@@ -29,12 +30,11 @@ class FirebaseRepository(private val context: Context) {
     var firebaseNoteListener: FirebaseNoteListener? = null
     var firebaseReadNoteListener: FirebaseReadNoteListener? = null
     var firebaseLabelListener: FirebaseLabelListener? = null
+    var firebaseReadLabelListener: FirebaseReadLabelListener? = null
 
     private val USER_TABLE = "User"
     private val NOTE_TABLE = "Note"
     private val LABEL_TABLE = "Label"
-    private val STORAGE_TABLE = "Storage"
-    private val TRASH_TABLE = "Trash"
 
     private fun connectUserRef () {
         reference = db.getReference(USER_TABLE)
@@ -218,6 +218,26 @@ class FirebaseRepository(private val context: Context) {
                 firebaseReadUserListener!!.onReadUserFailure()
             }
 
+        })
+    }
+
+    fun getLabels(userId: String) {
+        connectLabelRef(userId)
+        val labels = ArrayList<Label>()
+        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (labelSnapshot in snapshot.children) {
+                    val label = labelSnapshot.getValue(Label::class.java)
+                    label?.id = labelSnapshot.key.toString()
+                    if (label != null) {
+                        labels.add(label)
+                    }
+                }
+                firebaseReadLabelListener!!.onReadLabelListComplete(labels)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                firebaseReadLabelListener!!.onReadLabelListFailure()
+            }
         })
     }
 

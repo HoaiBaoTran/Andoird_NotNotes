@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.notnotes.R
 import com.example.notnotes.listener.FirebaseLoginUserListener
 import com.example.notnotes.listener.FirebaseNoteListener
+import com.example.notnotes.listener.FirebaseReadLabelListener
 import com.example.notnotes.listener.FirebaseReadNoteListener
 import com.example.notnotes.listener.FirebaseRegisterUserListener
 import com.example.notnotes.listener.FirebaseReadUserListener
@@ -37,6 +38,8 @@ class FirebaseService(
     private lateinit var firebaseNoteListener: FirebaseNoteListener
     private lateinit var firebaseResetPasswordListener: FirebaseResetPasswordListener
     private lateinit var firebaseUploadImageListener: FirebaseUploadImageListener
+    private lateinit var firebaseReadLabelListener: FirebaseReadLabelListener
+
     var firebaseReadNoteListener: FirebaseReadNoteListener? = null
         set(value) {
             field = value
@@ -102,6 +105,15 @@ class FirebaseService(
         firebaseRepository.firebaseNoteListener = fireNoteListener
         firebaseRepository.firebaseReadNoteListener = fireReadNoteListener
         firebaseRepository.firebaseReadUserListener = readUserListener
+    }
+
+    constructor(
+        context: Context,
+        firebaseReadLabelListener: FirebaseReadLabelListener,
+        firebaseReadUserListener: FirebaseReadUserListener
+    ) : this(context) {
+        this.firebaseReadLabelListener = firebaseReadLabelListener
+        this.firebaseReadUserListener = firebaseReadUserListener
     }
 
     // -- NOTE --
@@ -341,6 +353,11 @@ class FirebaseService(
     fun getUserFromFirebaseUser(firebaseUser: FirebaseUser) {
         val id = firebaseUser.uid
         firebaseRepository.getUserFromId(id)
+    }
+
+    fun getLabels() {
+        val userId = auth.currentUser!!.uid
+        firebaseRepository.getLabels(userId)
     }
 
     fun addLabel(label: Label) {

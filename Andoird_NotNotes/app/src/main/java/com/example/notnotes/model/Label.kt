@@ -1,3 +1,3 @@
 package com.example.notnotes.model
 
-data class Label(val name: String = "")
+data class Label(var id: String = "", val name: String = "")
