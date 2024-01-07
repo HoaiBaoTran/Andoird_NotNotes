@@ -1,99 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".noteservice.TrashActivity"
     android:theme="@style/BrandedSwitch"
-    android:orientation="vertical">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tool_bar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/bluebutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/BrandedSwitch"
-        app:titleTextColor="@color/white" />
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_gravity="center"
-        android:elevation="15dp"
-        android:visibility="gone"/>
-
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/rbLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label"
-            android:checked="true"
-            android:theme="@style/MyAppTheme"
-            android:layout_marginEnd="16dp"
-            android:textSize="20sp"/>
-
-        <RadioButton
-            android:id="@+id/rbTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title"
-            android:checked="false"
-            android:theme="@style/MyAppTheme"
-            android:layout_marginEnd="16dp"
-            android:textSize="20sp"/>
-
-        <RadioButton
-            android:id="@+id/rbContent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/content"
-            android:checked="false"
-            android:theme="@style/MyAppTheme"
-            android:textSize="20sp"/>
-
-    </RadioGroup>
+    android:id="@+id/drawer_layout">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvSearch"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/bluebutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/BrandedSwitch"
+            app:titleTextColor="@color/white" />
+
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/search_note_by_label"
-            android:textSize="20sp"
-            android:layout_marginEnd="8dp"/>
+            android:id="@+id/progressBar"
+            android:layout_gravity="center"
+            android:elevation="15dp"
+            android:visibility="gone"/>
 
-        <EditText
-            android:id="@+id/etSearch"
+        <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/science"
-            android:ems="10"
-            android:inputType="text"
-            android:drawableEnd="@drawable/ic_search"
-            android:drawablePadding="8dp"
-            />
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label"
+                android:checked="true"
+                android:theme="@style/MyAppTheme"
+                android:layout_marginEnd="16dp"
+                android:textSize="20sp"/>
+
+            <RadioButton
+                android:id="@+id/rbTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title"
+                android:checked="false"
+                android:theme="@style/MyAppTheme"
+                android:layout_marginEnd="16dp"
+                android:textSize="20sp"/>
+
+            <RadioButton
+                android:id="@+id/rbContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/content"
+                android:checked="false"
+                android:theme="@style/MyAppTheme"
+                android:textSize="20sp"/>
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/tvSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/search_note_by_label"
+                android:textSize="20sp"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/science"
+                android:ems="10"
+                android:inputType="text"
+                android:drawableEnd="@drawable/ic_search"
+                android:drawablePadding="8dp"
+                />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_trash"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_trash"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/layout_header_nav"
+        app:menu="@menu/nav_menu"/>
+</androidx.drawerlayout.widget.DrawerLayout>
 
-</LinearLayout>

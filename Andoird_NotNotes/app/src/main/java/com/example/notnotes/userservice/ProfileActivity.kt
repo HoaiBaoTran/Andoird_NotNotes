@@ -1,5 +1,7 @@
 package com.example.notnotes.userservice
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -16,6 +18,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import com.example.notnotes.MainActivity
 import com.example.notnotes.R
 import com.example.notnotes.appservice.SettingActivity
 import com.example.notnotes.database.FirebaseService
@@ -23,6 +26,7 @@ import com.example.notnotes.databinding.ActivityProfileBinding
 import com.example.notnotes.listener.FirebaseReadUserListener
 import com.example.notnotes.listener.FirebaseUpdateUserListener
 import com.example.notnotes.model.User
+import com.example.notnotes.noteservice.AddLabelActivity
 import com.example.notnotes.noteservice.TrashActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
@@ -246,13 +250,13 @@ class ProfileActivity :
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_notes -> {
-
+                openMainActivity()
             }
             R.id.nav_storage -> {
 
             }
             R.id.nav_label -> {
-
+                openAddLabelActivity()
             }
             R.id.nav_recycle_bin -> {
                 openTrashActivity()
@@ -274,13 +278,47 @@ class ProfileActivity :
         return true
     }
 
+    private fun openMainActivity() {
+        val mainIntent = Intent(this, MainActivity::class.java)
+        if (isActivityRunning(this, MainActivity::class.java)) {
+            mainIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        }
+        else {
+            mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        startActivity(mainIntent)
+    }
+
+    private fun openAddLabelActivity() {
+        val labelIntent = Intent(this, AddLabelActivity::class.java)
+        if (isActivityRunning(this, AddLabelActivity::class.java)) {
+            labelIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        }
+        else {
+            labelIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        startActivity(labelIntent)
+    }
+
     private fun openTrashActivity() {
         val trashIntent = Intent(this, TrashActivity::class.java)
+        if (isActivityRunning(this, TrashActivity::class.java)) {
+            trashIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        }
+        else {
+            trashIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
         startActivity(trashIntent)
     }
 
     private fun openSettingActivity() {
         val settingIntent = Intent(this, SettingActivity::class.java)
+        if (isActivityRunning(this, SettingActivity::class.java)) {
+            settingIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        }
+        else {
+            settingIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
         startActivity(settingIntent)
     }
 
@@ -291,17 +329,37 @@ class ProfileActivity :
 
     private fun openChangePasswordActivity() {
         val changePasswordIntent = Intent(this, ChangePasswordActivity::class.java)
+        if (isActivityRunning(this, ChangePasswordActivity::class.java)) {
+            changePasswordIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        }
+        else {
+            changePasswordIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
         startActivity(changePasswordIntent)
     }
 
     private fun openLoginActivity() {
         val loginIntent = Intent(this, LoginActivity::class.java)
+        loginIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(loginIntent)
         finish()
     }
 
     private fun openProfileActivity() {
         val profileIntent = Intent(this, ProfileActivity::class.java)
+        if (isActivityRunning(this, ChangePasswordActivity::class.java)) {
+            profileIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        }
+        else {
+            profileIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
         startActivity(profileIntent)
+    }
+
+    private fun isActivityRunning(context: Context, activityClass: Class<*>): Boolean {
+        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val taskInfo = am.getRunningTasks(1)[0]
+        val componentName = taskInfo.topActivity
+        return componentName?.className == activityClass.name
     }
 }

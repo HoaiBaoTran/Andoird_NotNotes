@@ -12,6 +12,7 @@ class Note() : Parcelable {
     var deleted: Boolean = false
     var deadlineDate: String? = ""
     var deadlineTime: String? = ""
+    val attachments: List<Attachment> = emptyList()
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString().toString()
